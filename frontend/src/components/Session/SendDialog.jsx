@@ -1,0 +1,129 @@
+import { useState } from "react";
+import { IoIosSearch } from "react-icons/io";
+import { RxCross2 } from "react-icons/rx";
+
+const clients = [
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    position: "VP of Marketing",
+    company: "Innovate Tech Solutions",
+  },
+  {
+    id: 2,
+    name: "Michael Chen",
+    position: "Senior Product Manager",
+    company: "Future Systems Inc",
+  },
+  {
+    id: 3,
+    name: "Elena Rodriguez",
+    position: "Director of Operations",
+    company: "Global Dynamics",
+  },
+];
+
+export default function SendDialog() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedClient, setSelectedClient] = useState(null);
+
+  const filteredClients = clients.filter(
+    (client) =>
+      client.name.toLowerCase().includes(search.toLowerCase()) ||
+      client.position.toLowerCase().includes(search.toLowerCase()) ||
+      client.company.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleSend = () => {
+    if (selectedClient) {
+      alert(`Sending to: ${selectedClient.name}`);
+      setIsOpen(false);
+    } else {
+      alert("Please select a client.");
+    }
+  };
+
+  return (
+    <div>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white rounded-full flex items-center gap-2"
+      >
+        Send
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="lucide lucide-send-horizontal w-4 h-4"
+        >
+          <path d="m3 3 3 9-3 9 19-9Z" />
+          <path d="M6 12h16" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
+            <div className="flex justify-between items-start">
+            <h2 className="text-lg font-semibold text-black">Select Client</h2>
+            <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-700"
+              >
+                <RxCross2 />
+              </button>
+            </div>
+            <div className="relative">
+            <input
+              type="text"
+              placeholder="Search clients..."
+              className="w-full border placeholder:text-black placeholder:text-[17px] border-gray-300 rounded-md px-8 py-2"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <IoIosSearch className="absolute top-[10px] text-2xl left-2 text-black"/>
+            </div>
+
+            <div className="max-h-60 overflow-y-auto divide-y scrollbar-hide">
+              {filteredClients.length > 0 ? (
+                filteredClients.map((client) => (
+                  <div
+                    key={client.id}
+                    onClick={() => setSelectedClient(client)}
+                    className={`p-3 cursor-pointer hover:bg-blue-100 rounded text-start ${
+                      selectedClient?.id === client.id
+                        ? "bg-blue-100 border border-blue-500"
+                        : ""
+                    }`}
+                  >
+                    <p className="font-medium text-gray-700">{client.name}</p>
+                    <p className="text-sm text-gray-600">{client.position}</p>
+                    <p className="text-sm text-gray-500">{client.company}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 py-4 text-center">No clients found.</p>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <button
+                onClick={handleSend}
+                className="px-4 py-2 rounded-md bg-blue-500 text-white"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

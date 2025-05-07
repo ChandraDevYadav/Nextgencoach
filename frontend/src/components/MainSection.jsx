@@ -14,14 +14,14 @@ const cards = [
   },
   {
     icon: <RiVideoOnLine className="w-8 h-8" />,
-    title: "Session Recording",
+    title: "Live Coaching",
     description:
       "Capture and analyze sessions with video and audio tools for enhanced insights.",
     link: "/coaching",
   },
   {
     icon: <MdOutlineFeed className="w-8 h-8" />,
-    title: "Feedback Reports",
+    title: "Coaching Feedback",
     description:
       "Generate feedback summaries and reports with smart AI recommendations.",
     link: "/feedback",
@@ -44,7 +44,7 @@ const cards = [
         <path d="M9 13v2"></path>
       </svg>
     ),
-    title: "AI Assistant",
+    title: "Skill Builder",
     description:
       "Let AI help you plan, organize, and suggest improvements to sessions.",
     link: "/session/ai-generated",
