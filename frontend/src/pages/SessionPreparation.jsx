@@ -7,10 +7,8 @@ const SessionPreparation = () => {
       className="relative min-h-screen flex justify-center items-center bg-cover bg-bottom"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
-      {/* Blurred background overlay */}
       <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
-      {/* Main content container with higher z-index */}
       <div className="z-10 w-full max-w-6xl px-4">
         <QuestionnaireTabs />
       </div>

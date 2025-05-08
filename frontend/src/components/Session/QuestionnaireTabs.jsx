@@ -19,7 +19,6 @@ const QuestionnaireTabs = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-10 p-4">
-      {/* Tab Buttons */}
       <div className="flex justify-between items-center space-x-4 mb-6">
         {tabs.map((tab) => (
           <button
@@ -36,7 +35,6 @@ const QuestionnaireTabs = () => {
         ))}
       </div>
 
-      {/* Tab Content */}
       {activeTab === "Send Questionnaire" && (
         <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
           <div>
@@ -72,7 +70,7 @@ const QuestionnaireTabs = () => {
                     <span className="text-[16px] text-gray-500">Intake</span>
                   </div>
                   <button className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-full flex justify-center items-center gap-1">
-                  <SendDialog />
+                    <SendDialog />
                   </button>
                 </div>
                 <div className="mt-2">
@@ -98,7 +96,7 @@ const QuestionnaireTabs = () => {
                     </span>
                   </div>
                   <button className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-full flex justify-center items-center gap-1">
-                  <SendDialog />
+                    <SendDialog />
                   </button>
                 </div>
                 <div className="mt-2">
@@ -121,18 +119,18 @@ const QuestionnaireTabs = () => {
 
       {activeTab === "Results" && (
         <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-2">Questionnaire Results</h2>
+          <h2 className="text-2xl font-semibold mb-4">Questionnaire Results</h2>
           <div className="flex justify-between items-center gap-4">
             <input
               type="text"
               placeholder="Search results..."
-              className="w-full rounded-lg bg-white p-2 mb-4"
+              className="w-full rounded-lg bg-white p-3 mb-4"
             />
             <div className="flex gap-4 mb-4">
-              <select className="bg-white px-8 py-2 rounded-lg">
+              <select className="bg-white px-8 py-3 rounded-lg">
                 <option>All Clients</option>
               </select>
-              <select className="bg-white px-8 py-2 rounded-lg">
+              <select className="bg-white px-8 py-3 rounded-lg">
                 <option>All Dates</option>
               </select>
             </div>

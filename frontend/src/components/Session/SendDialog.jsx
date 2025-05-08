@@ -69,11 +69,13 @@ export default function SendDialog() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
             <div className="flex justify-between items-start">
-            <h2 className="text-lg font-semibold text-black">Select Client</h2>
-            <button
+              <h2 className="text-lg font-semibold text-black">
+                Select Client
+              </h2>
+              <button
                 onClick={() => setIsOpen(false)}
                 className="text-gray-700"
               >
@@ -81,14 +83,14 @@ export default function SendDialog() {
               </button>
             </div>
             <div className="relative">
-            <input
-              type="text"
-              placeholder="Search clients..."
-              className="w-full border placeholder:text-black placeholder:text-[17px] border-gray-300 rounded-md px-8 py-2"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <IoIosSearch className="absolute top-[10px] text-2xl left-2 text-black"/>
+              <input
+                type="text"
+                placeholder="Search clients..."
+                className="w-full border placeholder:text-black placeholder:text-[17px] border-gray-300 rounded-md px-8 py-2"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <IoIosSearch className="absolute top-[10px] text-2xl left-2 text-black" />
             </div>
 
             <div className="max-h-60 overflow-y-auto divide-y scrollbar-hide">
@@ -109,7 +111,9 @@ export default function SendDialog() {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 py-4 text-center">No clients found.</p>
+                <p className="text-sm text-gray-500 py-4 text-center">
+                  No clients found.
+                </p>
               )}
             </div>
 

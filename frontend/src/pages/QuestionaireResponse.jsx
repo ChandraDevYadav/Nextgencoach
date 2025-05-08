@@ -1,34 +1,35 @@
-import React from 'react';
-import { LuBrain } from 'react-icons/lu';
+import React from "react";
+import { LuBrain } from "react-icons/lu";
 
 const QuestionaireResponse = () => {
   const response = {
-    name: 'Sarah Johnson',
-    date: '2025-06-24',
+    name: "Sarah Johnson",
+    date: "2025-06-24",
     answers: [
       {
-        question: 'What would you like to focus on in our upcoming session?',
+        question: "What would you like to focus on in our upcoming session?",
         answer:
-          'I want to discuss specific strategies for effectively delegating to my team while still maintaining quality standards.',
+          "I want to discuss specific strategies for effectively delegating to my team while still maintaining quality standards.",
       },
       {
-        question: 'What progress have you made since our last session?',
+        question: "What progress have you made since our last session?",
         answer:
           "I've started using the communication framework we discussed with executive stakeholders and have received positive feedback.",
       },
       {
-        question: 'What challenges are you currently facing?',
+        question: "What challenges are you currently facing?",
         answer:
           "I find myself checking in too frequently and sometimes taking back tasks when I'm not satisfied with the progress.",
       },
       {
-        question: 'On a scale of 1-10, how would you rate your current stress level?',
-        answer: '8',
+        question:
+          "On a scale of 1-10, how would you rate your current stress level?",
+        answer: "8",
       },
       {
-        question: 'What specific outcomes would you like from this session?',
+        question: "What specific outcomes would you like from this session?",
         answer:
-          'I want to develop concrete strategies for building trust with my team and letting go of control.',
+          "I want to develop concrete strategies for building trust with my team and letting go of control.",
       },
     ],
   };
@@ -39,10 +40,8 @@ const QuestionaireResponse = () => {
         className="relative min-h-screen bg-cover bg-bottom"
         style={{ backgroundImage: "url('/bg.jpg')" }}
       >
-        {/* Overlay */}
         <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
-        {/* Main Content */}
         <div className="relative z-10 max-w-4xl mx-auto py-6">
           <button
             onClick={() => window.history.back()}

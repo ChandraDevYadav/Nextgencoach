@@ -43,10 +43,8 @@ const AiGeneratedReport = () => {
         className="relative min-h-screen bg-cover bg-bottom"
         style={{ backgroundImage: "url('/bg.jpg')" }}
       >
-        {/* Overlay */}
         <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
-        {/* Back Button OUTSIDE the white box */}
         <div className="relative z-10 max-w-4xl mx-auto pt-6 pb-3">
           <button
             onClick={() => window.history.back()}
@@ -56,7 +54,6 @@ const AiGeneratedReport = () => {
           </button>
         </div>
 
-        {/* White Card Content with Background Blur */}
         <div className="relative z-10 max-w-4xl mx-auto p-6 bg-white/70 rounded-lg shadow-md mt-2">
           <div className="flex justify-between items-center flex-wrap gap-x-4 mt-2">
             <div>
