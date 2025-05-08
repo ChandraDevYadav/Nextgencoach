@@ -51,7 +51,9 @@ const Navbar = () => {
                 className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                 onClick={() => navigate("/session")}
               >
-                View Sessions
+                <p class="font-medium">Next Session</p>
+                <p class="text-sm text-gray">Sarah Johnson</p>
+                <p class="text-sm text-gray">Tomorrow, 10:00 AM</p>
               </button>
             </div>
           )}
