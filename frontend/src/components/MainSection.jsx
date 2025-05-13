@@ -88,12 +88,18 @@ const MainSection = () => {
               onClick={() => handleCardClick(index)}
               className="w-full"
             >
-              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-card transition duration-300 transform hover:-translate-y-1 hover:shadow-lg cursor-pointer w-full">
-                {card.icon}
-                <h1 className="text-lg font-semibold pt-4 pb-2">
-                  {card.title}
-                </h1>
-                <p className="text-gray-500">{card.description}</p>
+              <div className="group relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-card transition duration-300 transform hover:-translate-y-1 hover:shadow-lg cursor-pointer w-full">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
+
+                <div className="relative z-10 transition-colors duration-300 group-hover:text-white">
+                  {card.icon}
+                  <h1 className="text-lg font-semibold pt-4 pb-2">
+                    {card.title}
+                  </h1>
+                  <p className="text-gray-500 group-hover:text-white">
+                    {card.description}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

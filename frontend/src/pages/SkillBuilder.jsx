@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 const SkillBuilder = () => {
@@ -31,8 +33,18 @@ const SkillBuilder = () => {
     >
       <div className="absolute inset-0 bg-white/20 backdrop-blur-lg z-0" />
 
-      <div className="relative z-10 max-w-4xl mx-auto">
-        <div className="px-4 py-8 space-y-4 bg-white/50">
+      <div className="relative z-10 max-w-4xl mx-auto pb-12">
+        {/* Back to Home Button */}
+        <div className="py-6 px-4">
+          <button
+            onClick={() => navigate("/")}
+            className="text-blue-600 hover:text-red-600 hover:underline text-[17px] font-medium flex justify-start items-center gap-2"
+          >
+            <FaArrowLeftLong /> Back to Home
+          </button>
+        </div>
+
+        <div className="px-4 py-8 space-y-4 bg-white/60 rounded-lg">
           <h1 className="text-2xl font-semibold">Configure Practice Avatar</h1>
           <p className="text-gray-700 text-[17px]">
             Create a custom client avatar to practice your coaching skills
@@ -198,10 +210,10 @@ const SkillBuilder = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-bot w-6 h-6 text-primary"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-bot w-6 h-6 text-primary"
                 >
                   <path d="M12 8V4H8"></path>
                   <rect width="16" height="12" x="4" y="8" rx="2"></rect>

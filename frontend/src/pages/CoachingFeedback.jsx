@@ -156,10 +156,10 @@ const CoachingFeedback = () => {
       className="relative min-h-screen bg-cover bg-bottom"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
-      <div className="absolute inset-0 bg-white/30 backdrop-blur-lg z-0" />
+      <div className="absolute inset-0 bg-white/30 backdrop-blur-lg z-0 rounded-lg" />
 
-      <div className="relative z-10 max-w-4xl mx-auto pt-10 ">
-        <div className="bg-white/70 px-4 py-8">
+      <div className="relative z-10 max-w-4xl mx-auto pt-10 rounded-lg">
+        <div className="bg-white/70 px-6 py-8 rounded-lg">
           <h1 className="text-2xl font-bold mb-4 text-black">
             Coaching Sessions
           </h1>

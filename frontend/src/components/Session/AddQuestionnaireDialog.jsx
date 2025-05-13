@@ -17,7 +17,7 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex bg-white/90 items-center justify-center z-50">
+    <div className="fixed inset-0 flex bg-black/90 items-center rounded-lg justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
         <div className="flex justify-between items-start">
           <h2 className="text-lg font-semibold mb-4">Add New Questionnaire</h2>

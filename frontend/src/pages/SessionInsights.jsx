@@ -24,7 +24,7 @@ const SessionInsights = () => {
   } = state;
 
   const getProgressWidth = (score) => {
-    return Math.min(Math.max(score, 0), 100); 
+    return Math.min(Math.max(score, 0), 100);
   };
 
   return (
@@ -37,9 +37,10 @@ const SessionInsights = () => {
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-8">
         <button
           onClick={() => navigate(-1)}
-          className="text-blue-600 hover:underline text-lg flex justify-start items-center gap-2"
+          className="text-blue-600 hover:text-red-600 font-medium hover:underline text-[17px] flex justify-start items-center gap-2"
         >
-          <FaArrowLeftLong />Back to Sessions
+          <FaArrowLeftLong />
+          Back to Sessions
         </button>
 
         <div className="mt-6 space-y-6 bg-white/70 p-6 rounded-lg shadow">
@@ -107,7 +108,7 @@ const SessionInsights = () => {
                   <div
                     className="h-full bg-[#33C9A7]"
                     style={{
-                      width: `${getProgressWidth(90)}%`, 
+                      width: `${getProgressWidth(90)}%`,
                     }}
                   />
                 </div>
@@ -122,7 +123,7 @@ const SessionInsights = () => {
                   <div
                     className="h-full bg-[#33C9A7]"
                     style={{
-                      width: `${getProgressWidth(75)}%`, 
+                      width: `${getProgressWidth(75)}%`,
                     }}
                   />
                 </div>

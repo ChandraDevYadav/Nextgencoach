@@ -1,4 +1,5 @@
 import React from "react";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
 
 const AiGeneratedReport = () => {
@@ -40,21 +41,21 @@ const AiGeneratedReport = () => {
   return (
     <>
       <div
-        className="relative min-h-screen bg-cover bg-bottom"
+        className="relative min-h-screen bg-cover bg-bottom pb-8"
         style={{ backgroundImage: "url('/bg.jpg')" }}
       >
         <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
-        <div className="relative z-10 max-w-4xl mx-auto pt-6 pb-3">
+        <div className="relative z-10 max-w-4xl mx-auto py-6">
           <button
             onClick={() => window.history.back()}
-            className="text-gray-500 hover:text-red-600 hover:underline text-lg font-medium"
+            className="text-blue-500 hover:text-red-600 hover:underline text-[17px] font-medium flex justify-start items-center gap-2"
           >
-            ← Back to Reports
+            <FaArrowLeftLong /> Back to Reports
           </button>
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto p-6 bg-white/70 rounded-lg shadow-md mt-2">
+        <div className="relative z-10 max-w-4xl mx-auto p-6 bg-white/70 rounded-lg shadow-md">
           <div className="flex justify-between items-center flex-wrap gap-x-4 mt-2">
             <div>
               <h2 className="text-2xl font-bold">

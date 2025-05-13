@@ -48,7 +48,7 @@ export default function SendDialog() {
     <div>
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white rounded-full flex items-center gap-2"
+        className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] font-medium text-white hover:text-red-600 rounded-full flex items-center gap-2"
       >
         Send
         <svg
@@ -69,7 +69,7 @@ export default function SendDialog() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/90 rounded-lg flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
             <div className="flex justify-between items-start">
               <h2 className="text-lg font-semibold text-black">
@@ -86,7 +86,7 @@ export default function SendDialog() {
               <input
                 type="text"
                 placeholder="Search clients..."
-                className="w-full border placeholder:text-black placeholder:text-[17px] border-gray-300 rounded-md px-8 py-2"
+                className="w-full border text-black placeholder:text-black placeholder:text-[17px] border-gray-300 rounded-md px-8 py-2"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />

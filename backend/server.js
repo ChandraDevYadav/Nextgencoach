@@ -4,6 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
+import "dotenv/config";
 
 import userRoutes from "./routes/user.Routes.js";
 import clientRoutes from "./routes/client.Routes.js";

@@ -1,4 +1,6 @@
 import React from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
 
 const QuestionaireResponse = () => {
@@ -37,17 +39,17 @@ const QuestionaireResponse = () => {
   return (
     <>
       <div
-        className="relative min-h-screen bg-cover bg-bottom"
+        className="relative min-h-screen bg-cover bg-bottom pb-6"
         style={{ backgroundImage: "url('/bg.jpg')" }}
       >
         <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
-        <div className="relative z-10 max-w-4xl mx-auto py-6">
+        <div className="relative z-10 max-w-4xl mx-auto">
           <button
             onClick={() => window.history.back()}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline py-6 text-[17px] font-medium flex justify-start items-center gap-2"
           >
-            ← Back to Responses
+            <FaArrowLeftLong /> Back to Responses
           </button>
         </div>
 

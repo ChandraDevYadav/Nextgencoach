@@ -25,7 +25,7 @@ const QuestionnaireTabs = () => {
             key={tab}
             className={`inline-flex items-center justify-center w-full rounded-full px-6 py-3 font-medium transition-all duration-200 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white ${
               activeTab === tab
-                ? "bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white"
+                ? "bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white hover:text-red-600"
                 : "text-gray-600 hover:text-blue-600"
             }`}
             onClick={() => setActiveTab(tab)}
@@ -43,7 +43,7 @@ const QuestionnaireTabs = () => {
               <div>
                 <button
                   onClick={() => setIsDialogOpen(true)}
-                  className="mb-4 px-4 py-2 rounded bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white"
+                  className="mb-4 px-4 py-2 rounded bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white hover:text-red-600 font-medium"
                 >
                   + Add Questionnaire
                 </button>
@@ -162,10 +162,10 @@ const QuestionnaireTabs = () => {
               <Link
                 to="question-response"
                 key={index}
-                className="bg-white rounded-lg p-4 flex justify-between items-center"
+                className="bg-white rounded-lg p-4 space-y-4 flex justify-between items-center"
               >
                 <div>
-                  <div className="flex justify-start items-center gap-3">
+                  <div className="flex justify-start items-center gap-3 pb-2">
                     <RiUserLine />
                     <h1 className="text-xl font-semibold">{entry.name}</h1>
                     <p className="text-sm px-3 rounded-full text-[#166534] bg-[#dcfce7]">
