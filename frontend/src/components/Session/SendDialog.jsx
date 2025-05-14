@@ -69,8 +69,8 @@ export default function SendDialog() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/90 rounded-lg flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
+        <div className="fixed inset-0 bg-black/90 w-full rounded-lg flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-lg space-y-4">
             <div className="flex justify-between items-start">
               <h2 className="text-lg font-semibold text-black">
                 Select Client
@@ -120,7 +120,7 @@ export default function SendDialog() {
             <div className="flex justify-end gap-2 pt-4">
               <button
                 onClick={handleSend}
-                className="px-4 py-2 rounded-md bg-blue-500 text-white"
+                className="px-4 py-2 rounded-md bg-blue-600 hover:bg-[#16a181] text-white"
               >
                 Send
               </button>

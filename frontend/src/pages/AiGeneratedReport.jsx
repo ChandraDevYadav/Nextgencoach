@@ -71,15 +71,21 @@ const AiGeneratedReport = () => {
             </div>
 
             <div>
-              <button className="text-[17px] bg-white text-gray-600 px-6 py-3 shadow rounded-full hover:underline hover:text-white hover:bg-cyan-400 flex justify-start items-center gap-3 font-medium">
-                <FiDownload className="text-lg" />
-                Download PDF
+              <button className="relative overflow-hidden text-[17px] px-6 py-3 rounded-full font-medium text-white group shadow">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] z-0"></div>
+
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-400 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-10"></div>
+
+                <span className="relative z-20 flex items-center gap-3 transition-colors duration-300 group-hover:text-white">
+                  <FiDownload className="text-lg" />
+                  Download PDF
+                </span>
               </button>
             </div>
           </div>
 
           <div className="space-y-4 mt-4">
-            <div className="bg-white/70 p-4 shadow rounded-lg">
+            <div className="bg-white/70 p-4 shadow rounded-lg hover:bg-[#33c9a7] hover:text-white">
               <h4 className="font-semibold text-lg">Executive Summary</h4>
               <p>{report.summary}</p>
             </div>
@@ -90,9 +96,9 @@ const AiGeneratedReport = () => {
                 {report.keyThemes.map((theme, index) => (
                   <div
                     key={index}
-                    className="bg-white/70 rounded-md p-4 shadow-sm"
+                    className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group"
                   >
-                    <p className="text-[#33C9A7] text-[17px] font-medium">
+                    <p className="text-[#33C9A7] text-[17px] font-medium group-hover:text-white">
                       {theme.title}
                     </p>
                     <p className="text-[16px] mt-1">{theme.detail}</p>
@@ -101,23 +107,23 @@ const AiGeneratedReport = () => {
               </div>
             </div>
 
-            <div className="bg-white/70 rounded-md p-4 shadow-sm">
+            <div className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group">
               <h4 className="font-semibold text-xl">
                 Recommended Coaching Approach
               </h4>
               <ul className="space-y-1 mt-3">
                 {report.coachingApproach.map((item, index) => (
                   <li key={index} className="text-[17px] relative pl-5">
-                    <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-[#33C9A7]"></span>
+                    <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-[#33C9A7] group-hover:bg-white"></span>
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-white/70 rounded-md p-4 shadow-sm">
+            <div className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group">
               <h4 className="font-semibold text-xl">Suggested Questions</h4>
-              <ol className="list-decimal pl-5 space-y-1 mt-3 marker:text-[#33C9A7]">
+              <ol className="list-decimal pl-5 space-y-1 mt-3 marker:text-[#33C9A7] group-hover:marker:text-white">
                 {report.suggestedQuestions.map((q, index) => (
                   <li key={index} className="text-[17px]">
                     {q}

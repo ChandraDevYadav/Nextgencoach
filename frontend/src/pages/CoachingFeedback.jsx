@@ -1,10 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiSearch } from "react-icons/fi";
-import { FiUser } from "react-icons/fi";
+import { FiSearch, FiUser, FiCalendar } from "react-icons/fi";
 import { GrNotes } from "react-icons/gr";
-import { FiCalendar } from "react-icons/fi";
-import { FaAngleRight } from "react-icons/fa6";
+import { FaAngleRight, FaArrowLeftLong } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
 
 const sessions = [
@@ -146,10 +144,27 @@ const sessions = [
 
 const CoachingFeedback = () => {
   const navigate = useNavigate();
+  const [searchText, setSearchText] = useState("");
+  const [selectedClient, setSelectedClient] = useState("All Clients");
+  const [selectedDate, setSelectedDate] = useState("All Dates");
 
   const handleClick = (session) => {
     navigate("/feedback/session-insights", { state: session });
   };
+
+  const filteredSessions = sessions.filter((session) => {
+    const matchesSearch = session.client
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+    const matchesClient =
+      selectedClient === "All Clients" || session.client === selectedClient;
+    const matchesDate =
+      selectedDate === "All Dates" || session.date === selectedDate;
+    return matchesSearch && matchesClient && matchesDate;
+  });
+
+  const uniqueClients = [...new Set(sessions.map((s) => s.client))];
+  const uniqueDates = [...new Set(sessions.map((s) => s.date))];
 
   return (
     <div
@@ -158,7 +173,16 @@ const CoachingFeedback = () => {
     >
       <div className="absolute inset-0 bg-white/30 backdrop-blur-lg z-0 rounded-lg" />
 
-      <div className="relative z-10 max-w-4xl mx-auto pt-10 rounded-lg">
+      <div className="relative z-10 max-w-4xl mx-auto py-10 rounded-lg">
+        <div className="px-4 pb-6">
+          <button
+            onClick={() => navigate("/")}
+            className="text-blue-600 hover:text-red-600 hover:underline text-[17px] font-medium flex justify-start items-center gap-2"
+          >
+            <FaArrowLeftLong /> Back to Home
+          </button>
+        </div>
+
         <div className="bg-white/70 px-6 py-8 rounded-lg">
           <h1 className="text-2xl font-bold mb-4 text-black">
             Coaching Sessions
@@ -170,68 +194,89 @@ const CoachingFeedback = () => {
               <input
                 type="text"
                 placeholder="Search sessions..."
-                className="w-full border border-gray-50 shadow bg-white rounded pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className="w-full border-2 border-white shadow bg-white rounded pl-10 pr-4 py-2 focus:border-2 focus:border-cyan-400 outline-none transition"
               />
             </div>
-            <select className="border border-gray-50 shadow bg-white rounded px-4 py-2 focus:outline-none">
+
+            <select
+              value={selectedClient}
+              onChange={(e) => setSelectedClient(e.target.value)}
+              className="border-2 border-white shadow bg-white rounded px-4 py-2 focus:border-2 focus:border-cyan-400 outline-none transition"
+            >
               <option>All Clients</option>
+              {uniqueClients.map((client, idx) => (
+                <option key={idx}>{client}</option>
+              ))}
             </select>
-            <select className="border border-gray-50 shadow bg-white rounded px-4 py-2 focus:outline-none">
+
+            <select
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="border-2 border-white shadow bg-white rounded px-4 py-2 focus:border-2 focus:border-cyan-400 outline-none transition"
+            >
               <option>All Dates</option>
+              {uniqueDates.map((date, idx) => (
+                <option key={idx}>{date}</option>
+              ))}
             </select>
           </div>
 
           <div className="space-y-4">
-            {sessions.map((session, idx) => (
-              <div
-                key={idx}
-                onClick={() => handleClick(session)}
-                className="cursor-pointer bg-white/70 shadow-sm rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-white transition"
-              >
-                <div>
-                  <div className="flex justify-start items-center gap-2">
-                    <FiUser className="text-[#33C9A7] mt-1 text-lg" />
-                    <p className="font-semibold text-xl">{session.client}</p>
-                    <p className="px-4 py-[3px] rounded-full text-xs text-[#33C9A7] bg-[#35f8ca42]">
-                      {session.status}
-                    </p>
-                  </div>
-                  <div className="flex justify-start items-center gap-4 mt-3">
-                    <p className="text-sm font-medium text-gray-600 flex justify-start items-center gap-2">
-                      <GrNotes className="text-lg" />
-                      {session.type}
-                    </p>
-                    <p className="text-sm flex justify-start text-gray-600 font-medium items-center gap-2">
-                      <FiCalendar className="text-lg" />
-                      {session.date}
-                    </p>
-                  </div>
-                  <div className="mt-2">
-                    <p className="text-[15px] text-gray-700">
-                      {session.summary}
-                    </p>
-                    <p className="font-medium text-sm mt-2 text-[#33C9A7] flex justify-start items-center gap-2">
-                      <LuBrain />
-                      {session.analysis}
-                    </p>
-                  </div>
-                  <div></div>
-                </div>
-                <div className="flex justify-end items-center gap-3 sm:mt-0">
+            {filteredSessions.length > 0 ? (
+              filteredSessions.map((session, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => handleClick(session)}
+                  className="cursor-pointer bg-white/70 shadow-sm rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-white transition"
+                >
                   <div>
-                    <p className="text-sm text-gray-500 text-end">
-                      {session.duration}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Updated {session.updated}
-                    </p>
+                    <div className="flex justify-start items-center gap-2">
+                      <FiUser className="text-[#33C9A7] mt-1 text-lg" />
+                      <p className="font-semibold text-xl">{session.client}</p>
+                      <p className="px-4 py-[3px] rounded-full text-xs text-[#33C9A7] bg-[#35f8ca42]">
+                        {session.status}
+                      </p>
+                    </div>
+                    <div className="flex justify-start items-center gap-4 mt-3">
+                      <p className="text-sm font-medium text-gray-600 flex justify-start items-center gap-2">
+                        <GrNotes className="text-lg" />
+                        {session.type}
+                      </p>
+                      <p className="text-sm flex justify-start text-gray-600 font-medium items-center gap-2">
+                        <FiCalendar className="text-lg" />
+                        {session.date}
+                      </p>
+                    </div>
+                    <div className="mt-2">
+                      <p className="text-[15px] text-gray-700">
+                        {session.summary}
+                      </p>
+                      <p className="font-medium text-sm mt-2 text-[#33C9A7] flex justify-start items-center gap-2">
+                        <LuBrain />
+                        {session.analysis}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <FaAngleRight className="text-gray-500" />
+                  <div className="flex justify-end items-center gap-3 sm:mt-0">
+                    <div>
+                      <p className="text-sm text-gray-500 text-end">
+                        {session.duration}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Updated {session.updated}
+                      </p>
+                    </div>
+                    <div>
+                      <FaAngleRight className="text-gray-500" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-center text-gray-600">No sessions found.</p>
+            )}
           </div>
         </div>
       </div>

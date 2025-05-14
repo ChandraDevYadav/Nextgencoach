@@ -121,20 +121,21 @@ const PracticeBot = () => {
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white flex flex-col items-center gap-4">
-        <div className="flex justify-center gap-6">
+        <div className="flex justify-center gap-6 items-center">
+          {" "}
           <button
             onClick={startListening}
-            className={`p-4 rounded-full flex items-center justify-center text-white shadow transition ${
+            className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow transition ${
               recording
                 ? "bg-red-500 animate-pulse"
                 : "bg-[#33C9A7] hover:bg-red-500"
             }`}
           >
-            <FaMicrophone className="text-lg" />
+            <FaMicrophone size={28} className="m-auto" />
           </button>
           <button
             onClick={endSession}
-            className="flex items-center gap-2 px-4 text-lg font-medium bg-gray-200 hover:bg-gray-300 rounded-full text-gray-800 shadow"
+            className="h-12 px-4 text-lg font-medium bg-gray-200 hover:bg-gray-300 rounded-full text-gray-800 shadow flex items-center gap-2"
           >
             End Session
           </button>

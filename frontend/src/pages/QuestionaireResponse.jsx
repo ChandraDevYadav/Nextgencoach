@@ -1,9 +1,12 @@
-import React from "react";
-import { FaArrowLeft } from "react-icons/fa";
+import React, { useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
 const QuestionaireResponse = () => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const navigate = useNavigate();
+
   const response = {
     name: "Sarah Johnson",
     date: "2025-06-24",
@@ -36,6 +39,17 @@ const QuestionaireResponse = () => {
     ],
   };
 
+  const handleGenerateReport = () => {
+    setIsGenerating(true);
+
+    // Simulate AI report generation (3 seconds delay)
+    setTimeout(() => {
+      // Navigate to session page after generation
+      navigate("/session"); // Update this to your actual session route
+      setIsGenerating(false);
+    }, 3000);
+  };
+
   return (
     <>
       <div
@@ -63,7 +77,10 @@ const QuestionaireResponse = () => {
 
           <div className="space-y-6">
             {response.answers.map((item, index) => (
-              <div key={index} className="bg-white shadow p-4 rounded-lg">
+              <div
+                key={index}
+                className="bg-white shadow p-4 rounded-lg hover:bg-[#33c9a7] hover:text-white transition-colors duration-200"
+              >
                 <p className="font-semibold text-lg">{item.question}</p>
                 <p className="text-[17px] mt-2">{item.answer}</p>
               </div>
@@ -71,8 +88,43 @@ const QuestionaireResponse = () => {
           </div>
 
           <div className="flex justify-end">
-            <button className="mt-6 flex justify-start items-center gap-2 font-medium px-6 py-3 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white rounded-full hover:opacity-90 transition">
-              Generate AI Report <LuBrain />
+            <button
+              onClick={handleGenerateReport}
+              disabled={isGenerating}
+              className={`mt-6 flex justify-start items-center gap-2 font-medium px-6 py-3 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white rounded-full hover:opacity-90 transition ${
+                isGenerating ? "opacity-75 cursor-not-allowed" : ""
+              }`}
+            >
+              {isGenerating ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Generating...
+                  <LuBrain />
+                </>
+              ) : (
+                <>
+                  Generate AI Report <LuBrain />
+                </>
+              )}
             </button>
           </div>
         </div>

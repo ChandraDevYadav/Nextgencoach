@@ -34,7 +34,6 @@ const SkillBuilder = () => {
       <div className="absolute inset-0 bg-white/20 backdrop-blur-lg z-0" />
 
       <div className="relative z-10 max-w-4xl mx-auto pb-12">
-        {/* Back to Home Button */}
         <div className="py-6 px-4">
           <button
             onClick={() => navigate("/")}
@@ -244,16 +243,18 @@ const SkillBuilder = () => {
 
           <div className="flex justify-between mt-6">
             <button
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-red-600 hover:text-white"
               onClick={() => alert("Canceled")}
             >
               Cancel
             </button>
             <button
-              className="bg-blue-600 text-white px-4 py-2 rounded-md"
               onClick={handleStartVoiceSession}
+              className="relative overflow-hidden bg-blue-600 text-white px-4 py-2 rounded-md group"
             >
-              Start Voice Session
+              <span className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-400 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></span>
+
+              <span className="relative z-10">Start Voice Session</span>
             </button>
           </div>
         </div>

@@ -44,7 +44,7 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
         <div className="flex justify-end space-x-3 mt-6">
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 rounded flex gap-1 justify-start items-center bg-blue-600 hover:bg-blue-700 text-white"
+            className="px-4 py-2 rounded flex gap-1 justify-start items-center bg-blue-600 hover:bg-[#16a181] text-white"
           >
             <IoAdd className="text-lg" />
             Add
