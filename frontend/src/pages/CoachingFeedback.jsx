@@ -229,31 +229,31 @@ const CoachingFeedback = () => {
                 <div
                   key={idx}
                   onClick={() => handleClick(session)}
-                  className="cursor-pointer bg-white/70 shadow-sm rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-white transition"
+                  className="cursor-pointer bg-white/70 shadow-sm rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between transition group hover:bg-[#33c9a7] hover:text-white"
                 >
                   <div>
                     <div className="flex justify-start items-center gap-2">
-                      <FiUser className="text-[#33C9A7] mt-1 text-lg" />
+                      <FiUser className="text-[#33C9A7] mt-1 text-lg group-hover:text-white" />
                       <p className="font-semibold text-xl">{session.client}</p>
-                      <p className="px-4 py-[3px] rounded-full text-xs text-[#33C9A7] bg-[#35f8ca42]">
+                      <p className="px-4 py-[3px] rounded-full text-xs text-[#33C9A7] bg-[#35f8ca42] group-hover:bg-cyan-400 group-hover:text-white">
                         {session.status}
                       </p>
                     </div>
                     <div className="flex justify-start items-center gap-4 mt-3">
-                      <p className="text-sm font-medium text-gray-600 flex justify-start items-center gap-2">
+                      <p className="text-sm font-medium text-gray-600 flex justify-start items-center gap-2 group-hover:text-white">
                         <GrNotes className="text-lg" />
                         {session.type}
                       </p>
-                      <p className="text-sm flex justify-start text-gray-600 font-medium items-center gap-2">
+                      <p className="text-sm flex justify-start text-gray-600 font-medium items-center gap-2 group-hover:text-white">
                         <FiCalendar className="text-lg" />
                         {session.date}
                       </p>
                     </div>
                     <div className="mt-2">
-                      <p className="text-[15px] text-gray-700">
+                      <p className="text-[15px] text-gray-700 group-hover:text-white">
                         {session.summary}
                       </p>
-                      <p className="font-medium text-sm mt-2 text-[#33C9A7] flex justify-start items-center gap-2">
+                      <p className="font-medium text-sm mt-2 text-[#33C9A7] flex justify-start items-center gap-2 group-hover:text-white">
                         <LuBrain />
                         {session.analysis}
                       </p>
@@ -261,15 +261,15 @@ const CoachingFeedback = () => {
                   </div>
                   <div className="flex justify-end items-center gap-3 sm:mt-0">
                     <div>
-                      <p className="text-sm text-gray-500 text-end">
+                      <p className="text-sm text-gray-500 text-end group-hover:text-white">
                         {session.duration}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 group-hover:text-white">
                         Updated {session.updated}
                       </p>
                     </div>
                     <div>
-                      <FaAngleRight className="text-gray-500" />
+                      <FaAngleRight className="text-gray-500 group-hover:text-white" />
                     </div>
                   </div>
                 </div>

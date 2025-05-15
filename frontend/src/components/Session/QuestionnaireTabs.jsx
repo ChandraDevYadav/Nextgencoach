@@ -23,7 +23,7 @@ const QuestionnaireTabs = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] z-0"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-400 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-10"></div>
-            <span className="relative z-20 transition-colors duration-300 group-hover:text-white">
+            <span className="relative z-20 transition-colors duration-300 group-hover:text-white text-[14px]">
               {tab}
             </span>
           </button>

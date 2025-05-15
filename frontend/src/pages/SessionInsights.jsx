@@ -52,25 +52,27 @@ const SessionInsights = () => {
               {type}
             </p>
           </div>
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-gray-100 p-4 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
             <h2 className="font-semibold text-xl">Session Overview</h2>
-            <p className="text-gray-700 mt-1">{overview}</p>
+            <p className="text-gray-700 mt-1 group-hover:text-white">
+              {overview}
+            </p>
           </div>
 
           <div>
             <h2 className="font-semibold text-xl mb-4">Key Observations</h2>
             <div className="grid sm:grid-cols-2 gap-4">
-              <div className="bg-gray-100 p-4 rounded-lg">
+              <div className="bg-gray-100 p-4 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
                 <h3 className="font-medium">Strengths Demonstrated</h3>
-                <ul className="list-disc list-inside text-gray-700">
+                <ul className="list-disc list-inside text-gray-700 group-hover:text-white">
                   {strengths.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
                 </ul>
               </div>
-              <div className="bg-gray-100 p-4 rounded-lg">
+              <div className="bg-gray-100 p-4 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
                 <h3 className="font-medium">Areas for Development</h3>
-                <ul className="list-disc list-inside text-gray-700">
+                <ul className="list-disc list-inside text-gray-700 group-hover:text-white">
                   {development.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
@@ -79,19 +81,21 @@ const SessionInsights = () => {
             </div>
           </div>
 
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-gray-100 p-4 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
             <h2 className="font-semibold text-xl">
               Coaching Effectiveness Analysis
             </h2>
             <div>
               <div className="pt-3">
-                <h1 className="text-[#33C9A7] font-medium">Question Quality</h1>
+                <h1 className="text-[#33C9A7] font-medium group-hover:text-white">
+                  Question Quality
+                </h1>
                 <div
-                  className="h-2 w-full my-1 bg-gray-300 rounded-full overflow-hidden"
+                  className="h-2 w-full my-2 bg-gray-300 rounded-full overflow-hidden group-hover:bg-white"
                   style={{ width: "100%" }}
                 >
                   <div
-                    className="h-full bg-[#33C9A7]"
+                    className="h-full bg-[#33C9A7] group-hover:bg-amber-400"
                     style={{
                       width: `${getProgressWidth(85)}%`,
                     }}
@@ -100,13 +104,15 @@ const SessionInsights = () => {
                 <p>{analysis.questions}</p>
               </div>
               <div className="py-3">
-                <h1 className="text-[#33C9A7] font-medium">Active Listening</h1>
+                <h1 className="text-[#33C9A7] font-medium group-hover:text-white">
+                  Active Listening
+                </h1>
                 <div
-                  className="h-2 w-full my-1 bg-gray-300 rounded-full overflow-hidden"
+                  className="h-2 w-full my-2 bg-gray-300 rounded-full overflow-hidden group-hover:bg-white"
                   style={{ width: "100%" }}
                 >
                   <div
-                    className="h-full bg-[#33C9A7]"
+                    className="h-full bg-[#33C9A7] group-hover:bg-amber-400"
                     style={{
                       width: `${getProgressWidth(90)}%`,
                     }}
@@ -115,13 +121,15 @@ const SessionInsights = () => {
                 <p>{analysis.listening}</p>
               </div>
               <div>
-                <h1 className="text-[#33C9A7] font-medium">Goal Focus</h1>
+                <h1 className="text-[#33C9A7] font-medium group-hover:text-white">
+                  Goal Focus
+                </h1>
                 <div
-                  className="h-2 w-full my-1 bg-gray-300 rounded-full overflow-hidden"
+                  className="h-2 w-full my-2 bg-gray-300 rounded-full overflow-hidden group-hover:bg-white"
                   style={{ width: "100%" }}
                 >
                   <div
-                    className="h-full bg-[#33C9A7]"
+                    className="h-full bg-[#33C9A7] group-hover:bg-amber-400"
                     style={{
                       width: `${getProgressWidth(75)}%`,
                     }}
@@ -132,22 +140,22 @@ const SessionInsights = () => {
             </div>
           </div>
 
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-gray-100 p-4 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
             <h2 className="font-semibold text-xl">
               Recommendations for Next Session
             </h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-2 mt-4 text-[17px]">
+            <ul className="list-disc list-inside text-gray-700 space-y-2 mt-4 text-[17px] group-hover:text-white">
               {recommendations.map((rec, i) => (
                 <li key={i}>{rec}</li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-gray-100 p-4 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
             <h2 className="font-semibold text-xl">
               Suggested Questions for Next Session
             </h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-2 mt-4 text-[17px]">
+            <ul className="list-disc list-inside text-gray-700 space-y-2 mt-4 text-[17px] group-hover:text-white">
               {nextQuestions.map((q, i) => (
                 <li key={i}>{q}</li>
               ))}

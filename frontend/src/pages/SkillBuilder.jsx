@@ -43,7 +43,7 @@ const SkillBuilder = () => {
           </button>
         </div>
 
-        <div className="px-4 py-8 space-y-4 bg-white/60 rounded-lg">
+        <div className="px-6 py-8 space-y-4 bg-white/60 rounded-lg">
           <h1 className="text-2xl font-semibold">Configure Practice Avatar</h1>
           <p className="text-gray-700 text-[17px]">
             Create a custom client avatar to practice your coaching skills
@@ -198,10 +198,10 @@ const SkillBuilder = () => {
             </div>
           </div>
 
-          <div className="bg-gray-100 p-6 rounded-lg">
+          <div className="bg-gray-100 p-6 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
             <h2 className="text-xl font-medium">Avatar Preview</h2>
             <div className=" mt-2 flex justify-start items-center gap-6">
-              <div className="text-[#33C9A7] bg-[#35d4af4f] p-3 rounded-full">
+              <div className="text-[#33C9A7] bg-[#35d4af4f] group-hover:text-amber-400 group-hover:bg-white p-3 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -224,10 +224,10 @@ const SkillBuilder = () => {
               </div>
               <div>
                 <h3 className="text-xl font-semibold">Andrea Chen</h3>
-                <p className="text-gray-500 text-[16px] py-1">
+                <p className="text-gray-500 text-[16px] py-1 group-hover:text-white">
                   {avatar.age}, {avatar.gender}, {avatar.profession}
                 </p>
-                <p className="text-[16px] text-gray-700">
+                <p className="text-[16px] text-gray-700 group-hover:text-white">
                   {avatar.communicationStyle.toLowerCase()}{" "}
                   {avatar.profession.toLowerCase()} who is{" "}
                   {avatar.emotionalState.toLowerCase()} about{" "}
@@ -243,14 +243,14 @@ const SkillBuilder = () => {
 
           <div className="flex justify-between mt-6">
             <button
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-red-600 hover:text-white"
+              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-white"
               onClick={() => alert("Canceled")}
             >
               Cancel
             </button>
             <button
               onClick={handleStartVoiceSession}
-              className="relative overflow-hidden bg-blue-600 text-white px-4 py-2 rounded-md group"
+              className="relative overflow-hidden bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-md group"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-400 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></span>
 
