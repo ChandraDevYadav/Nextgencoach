@@ -9,10 +9,12 @@ import AiGeneratedReport from "./pages/AiGeneratedReport";
 import LiveCoaching from "./pages/LiveCoaching";
 import SessionInsights from "./pages/SessionInsights";
 import PracticeBot from "./pages/PracticeBot";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

@@ -1,8 +1,13 @@
-import React from "react";
+import { toPng } from "html-to-image";
+import jsPDF from "jspdf";
+import React, { useRef, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
 
 const AiGeneratedReport = () => {
+  const reportRef = useRef();
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const report = {
     name: "Sarah Johnson",
     date: "2025-06-24",
@@ -38,6 +43,23 @@ const AiGeneratedReport = () => {
     ],
   };
 
+  const downloadPDF = async () => {
+    setIsGenerating(true);
+    try {
+      const node = reportRef.current;
+      const dataUrl = await toPng(node, { cacheBust: true, quality: 1 });
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgProps = pdf.getImageProperties(dataUrl);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("ai_report.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+    setIsGenerating(false);
+  };
+
   return (
     <>
       <div
@@ -55,7 +77,10 @@ const AiGeneratedReport = () => {
           </button>
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto p-6 bg-white/70 rounded-lg shadow-md">
+        <div
+          ref={reportRef}
+          className="relative z-10 max-w-4xl mx-auto p-6 bg-white/70 rounded-lg shadow-md"
+        >
           <div className="flex justify-between items-center flex-wrap gap-x-4 mt-2">
             <div>
               <h2 className="text-2xl font-bold">
@@ -71,15 +96,42 @@ const AiGeneratedReport = () => {
             </div>
 
             <div>
-              <button className="relative overflow-hidden text-[17px] px-6 py-3 rounded-full font-medium text-white group shadow">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] z-0"></div>
-
-                <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-400 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-10"></div>
-
-                <span className="relative z-20 flex items-center gap-3 transition-colors duration-300 group-hover:text-white">
-                  <FiDownload className="text-lg" />
-                  Download PDF
-                </span>
+              <button
+                onClick={downloadPDF}
+                disabled={isGenerating}
+                className={`flex items-center gap-2 font-medium px-6 py-3 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white rounded-full hover:opacity-90 transition ${
+                  isGenerating ? "opacity-75 cursor-not-allowed" : ""
+                }`}
+              >
+                {isGenerating ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    Download Report <FiDownload />
+                  </>
+                )}
               </button>
             </div>
           </div>

@@ -31,7 +31,7 @@ const cards = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="lucide lucide-bot w-8 h-8 text-black"
+        className="lucide lucide-bot w-8 h-8 text-black group-hover:text-white transition-colors duration-300"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -89,7 +89,7 @@ const MainSection = () => {
               className="w-full"
             >
               <div className="group relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-card transition duration-300 transform hover:-translate-y-1 hover:shadow-lg cursor-pointer w-full">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-[700ms] ease-in-out z-0"></div>
 
                 <div className="relative z-10 transition-colors duration-300 group-hover:text-white">
                   {card.icon}

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoDeviceCameraVideo } from "react-icons/go";
 import { BsCameraVideoOffFill, BsMicFill, BsMicMuteFill } from "react-icons/bs";
+import toast from "react-hot-toast";
 
 const VideoSection = () => {
   const userVideoRef = useRef(null);
@@ -53,18 +54,18 @@ const VideoSection = () => {
 
   const toggleMic = () => {
     if (stream) {
-      stream
-        .getAudioTracks()
-        .forEach((track) => (track.enabled = !track.enabled));
+      stream.getAudioTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
       setIsMicOn(!isMicOn);
     }
   };
 
   const toggleCamera = () => {
     if (stream) {
-      stream
-        .getVideoTracks()
-        .forEach((track) => (track.enabled = !track.enabled));
+      stream.getVideoTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
       setIsCameraOn(!isCameraOn);
     }
   };
@@ -124,6 +125,7 @@ const VideoSection = () => {
         <button
           onClick={() => {
             stopCamera();
+            toast("Session ended");
             setShowSummary(true);
           }}
           className="ml-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
@@ -200,7 +202,7 @@ const VideoSection = () => {
 
               <button
                 onClick={() => {
-                  alert("Summary sent!");
+                  toast.success("Summary sent successfully!");
                   setShowSummary(false);
                   navigate("/");
                 }}

@@ -8,6 +8,8 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { FaCircleCheck } from "react-icons/fa6";
+import CalendarDialog from "./Common/CalendarDialog";
 
 const Navbar = () => {
   const [showCalendarDropdown, setShowCalendarDropdown] = useState(false);
@@ -15,31 +17,22 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
+  const [open, setOpen] = useState(false);
+
+  const sessions = [
+    { title: "Session with Sarah Johnson", date: "2025-05-18T10:00:00" },
+    { title: "Check-in with Alex Smith", date: "2025-05-21T14:00:00" },
+  ];
+
   return (
     <nav className="bg-white shadow-md px-4 md:px-6 py-3 flex justify-between items-center relative">
-      <Link to="/" className="flex items-center z-50">
+      <Link to="/" className="flex items-center z-50 group">
         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] flex items-center justify-center mr-3">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 40 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M20 0C8.95 0 0 8.95 0 20C0 31.05 8.95 40 20 40C31.05 40 40 31.05 40 20C40 8.95 31.05 0 20 0Z"
-              fill="white"
-            />
-            <path
-              d="M28.75 13.75L17.5 25L12.5 20"
-              stroke="#33C9A7"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <FaCircleCheck className="text-white text-xl" />
         </div>
-        <p className="text-xl font-bold text-blue-600">NextGen Coach</p>
+        <p className="text-xl font-bold text-black group-hover:text-blue-600">
+          NextGen Coach
+        </p>
       </Link>
 
       <div className="md:hidden z-50" onClick={() => setMenuOpen(!menuOpen)}>
@@ -56,26 +49,42 @@ const Navbar = () => {
           onMouseEnter={() => setShowCalendarDropdown(true)}
           onMouseLeave={() => setShowCalendarDropdown(false)}
         >
-          <div className="p-2 rounded-md hover:bg-gray-100 cursor-pointer">
-            <FaCalendarAlt className="text-xl text-gray-700" />
+          <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group">
+            <FaCalendarAlt className="text-xl text-gray-700 group-hover:text-white" />
           </div>
           {showCalendarDropdown && (
-            <div className="absolute right-0 mt-0 w-56 bg-white shadow-lg rounded-md z-50 border border-gray-100">
-              <button
-                className="block w-full px-4 py-3 text-left hover:bg-gray-50"
-                onClick={() => navigate("/session")}
-              >
-                <p className="font-medium text-gray-900">Next Session</p>
-                <p className="text-sm text-gray-500 mt-1">Sarah Johnson</p>
-                <p className="text-sm text-gray-500">Tomorrow, 10:00 AM</p>
-              </button>
-              <div className="border-t border-gray-100"></div>
-              <button
-                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700"
-                onClick={() => navigate("/calendar")}
-              >
-                View Full Calendar
-              </button>
+            <div className="relative">
+              <div className="absolute right-0 mt-0 w-56 bg-white shadow-lg rounded-md z-50 border border-gray-100 ">
+                <button
+                  className="block w-full px-4 py-3 text-left hover:bg-gray-50 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] hover:rounded-t-md transition-colors duration-300 group"
+                  onClick={() => navigate("/session")}
+                >
+                  <p className="font-medium text-gray-900 group-hover:text-white">
+                    Next Session
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1 group-hover:text-white">
+                    Sarah Johnson
+                  </p>
+                  <p className="text-sm text-gray-500 group-hover:text-white">
+                    Tomorrow, 10:00 AM
+                  </p>
+                </button>
+                <div className="border-t border-gray-100"></div>
+                <button
+                  onClick={() => setOpen(true)}
+                  className="block w-full px-4 py-2 text-left hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] hover:text-white text-gray-700 cursor-pointer rounded-b-md transition-all duration-300"
+                >
+                  View Full Calendar
+                </button>
+
+                {open && (
+                  <CalendarDialog
+                    title="Upcoming Coaching Sessions"
+                    sessions={sessions}
+                    onClose={() => setOpen(false)}
+                  />
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -85,25 +94,25 @@ const Navbar = () => {
           onMouseEnter={() => setShowReportDropdown(true)}
           onMouseLeave={() => setShowReportDropdown(false)}
         >
-          <div className="p-2 rounded-md hover:bg-gray-100 cursor-pointer">
-            <FaFileAlt className="text-xl text-gray-700" />
+          <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group">
+            <FaFileAlt className="text-xl text-gray-700 group-hover:text-white" />
           </div>
           {showReportDropdown && (
             <div className="absolute right-0 mt-0 w-48 bg-white shadow-lg rounded-md z-50 border border-gray-100">
               <button
-                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700"
+                className="block w-full px-4 py-2 text-left hover:rounded-t-md hover:bg-gray-50 text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300"
                 onClick={() => navigate("/reports")}
               >
                 Client Progress
               </button>
               <button
-                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700"
+                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300"
                 onClick={() => navigate("/reports/coaching")}
               >
                 Coaching Analytics
               </button>
               <button
-                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700"
+                className="block w-full px-4 py-2 text-left hover:rounded-b-md hover:bg-gray-50 text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300"
                 onClick={() => navigate("/reports/export")}
               >
                 Export Data
@@ -112,11 +121,11 @@ const Navbar = () => {
           )}
         </div>
 
-        <div className="p-2 rounded-md hover:bg-gray-100 cursor-pointer">
-          <FaUser className="text-xl text-gray-700" />
+        <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group">
+          <FaUser className="text-xl text-gray-700 group-hover:text-white" />
         </div>
-        <div className="p-2 rounded-md hover:bg-gray-100 cursor-pointer relative">
-          <FaBell className="text-xl text-gray-700" />
+        <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group relative">
+          <FaBell className="text-xl text-gray-700 group-hover:text-white" />
           <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
         </div>
       </div>

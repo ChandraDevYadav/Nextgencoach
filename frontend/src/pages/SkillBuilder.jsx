@@ -36,7 +36,7 @@ const SkillBuilder = () => {
       <div className="relative z-10 max-w-4xl mx-auto pb-12">
         <div className="py-6 px-4">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => window.history.back()}
             className="text-blue-600 hover:text-red-600 hover:underline text-[17px] font-medium flex justify-start items-center gap-2"
           >
             <FaArrowLeftLong /> Back to Home
@@ -244,7 +244,7 @@ const SkillBuilder = () => {
           <div className="flex justify-between mt-6">
             <button
               className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-white"
-              onClick={() => alert("Canceled")}
+              onClick={() => window.history.back()}
             >
               Cancel
             </button>
@@ -254,7 +254,28 @@ const SkillBuilder = () => {
             >
               <span className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-400 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></span>
 
-              <span className="relative z-10">Start Voice Session</span>
+              <span className="relative z-10 flex justify-start items-center">
+                Start Voice Session{" "}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-bot w-4 h-4 ml-2"
+                >
+                  <path d="M12 8V4H8"></path>
+                  <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+                  <path d="M2 14h2"></path>
+                  <path d="M20 14h2"></path>
+                  <path d="M15 13v2"></path>
+                  <path d="M9 13v2"></path>
+                </svg>
+              </span>
             </button>
           </div>
         </div>

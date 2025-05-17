@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+import toast from "react-hot-toast";
 
 const clients = [
   {
@@ -26,7 +27,9 @@ const clients = [
 export default function SendDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClients, setSelectedClients] = useState([]);
+
+  const isSending = useRef(false);
 
   const filteredClients = clients.filter(
     (client) =>
@@ -35,17 +38,34 @@ export default function SendDialog() {
       client.company.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleSend = () => {
-    if (selectedClient) {
-      alert(`Sending to: ${selectedClient.name}`);
-      setIsOpen(false);
+  const toggleClientSelection = (client) => {
+    if (selectedClients.some((c) => c.id === client.id)) {
+      setSelectedClients(selectedClients.filter((c) => c.id !== client.id));
     } else {
-      alert("Please select a client.");
+      setSelectedClients([...selectedClients, client]);
     }
   };
 
+  const handleSend = () => {
+    if (isSending.current) return;
+    isSending.current = true;
+
+    if (selectedClients.length > 0) {
+      toast.success(
+        `Sending to: ${selectedClients.map((c) => c.name).join(", ")}`
+      );
+      setIsOpen(false);
+      setSelectedClients([]);
+      setSearch("");
+    } else {
+      toast.error("Please select at least one client.");
+    }
+
+    isSending.current = false;
+  };
+
   return (
-    <div>
+    <>
       <button
         onClick={() => setIsOpen(true)}
         className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] font-medium text-white hover:text-red-600 rounded-full flex items-center gap-2"
@@ -73,7 +93,7 @@ export default function SendDialog() {
           <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-lg space-y-4">
             <div className="flex justify-between items-start">
               <h2 className="text-lg font-semibold text-black">
-                Select Client
+                Select Clients
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
@@ -82,6 +102,7 @@ export default function SendDialog() {
                 <RxCross2 />
               </button>
             </div>
+
             <div className="relative">
               <input
                 type="text"
@@ -98,16 +119,21 @@ export default function SendDialog() {
                 filteredClients.map((client) => (
                   <div
                     key={client.id}
-                    onClick={() => setSelectedClient(client)}
-                    className={`p-3 cursor-pointer hover:bg-blue-100 rounded text-start ${
-                      selectedClient?.id === client.id
+                    onClick={() => toggleClientSelection(client)}
+                    className={`p-3 cursor-pointer hover:bg-blue-100 rounded text-start flex justify-between items-center ${
+                      selectedClients.some((c) => c.id === client.id)
                         ? "bg-blue-100 border border-blue-500"
                         : ""
                     }`}
                   >
-                    <p className="font-medium text-gray-700">{client.name}</p>
-                    <p className="text-sm text-gray-600">{client.position}</p>
-                    <p className="text-sm text-gray-500">{client.company}</p>
+                    <div>
+                      <p className="font-medium text-gray-700">{client.name}</p>
+                      <p className="text-sm text-gray-600">{client.position}</p>
+                      <p className="text-sm text-gray-500">{client.company}</p>
+                    </div>
+                    {selectedClients.some((c) => c.id === client.id) && (
+                      <span className="text-blue-600 font-bold">✓</span>
+                    )}
                   </div>
                 ))
               ) : (
@@ -119,6 +145,7 @@ export default function SendDialog() {
 
             <div className="flex justify-end gap-2 pt-4">
               <button
+                type="button"
                 onClick={handleSend}
                 className="px-4 py-2 rounded-md bg-blue-600 hover:bg-[#16a181] text-white"
               >
@@ -128,6 +155,6 @@ export default function SendDialog() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
+import { toPng, toJpeg } from "html-to-image";
+import jsPDF from "jspdf";
 
 const QuestionaireResponse = () => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const navigate = useNavigate();
+  const [showDialog, setShowDialog] = useState(false);
+  const responseRef = useRef(null);
 
   const response = {
     name: "Sarah Johnson",
@@ -39,59 +41,83 @@ const QuestionaireResponse = () => {
     ],
   };
 
-  const handleGenerateReport = () => {
+  const downloadImage = async (format) => {
     setIsGenerating(true);
-
-    // Simulate AI report generation (3 seconds delay)
-    setTimeout(() => {
-      // Navigate to session page after generation
-      navigate("/session"); // Update this to your actual session route
-      setIsGenerating(false);
-    }, 3000);
+    try {
+      const node = responseRef.current;
+      const fileName = `Session_Response.${format}`;
+      if (format === "png") {
+        const dataUrl = await toPng(node);
+        const link = document.createElement("a");
+        link.download = fileName;
+        link.href = dataUrl;
+        link.click();
+      } else if (format === "jpeg") {
+        const dataUrl = await toJpeg(node);
+        const link = document.createElement("a");
+        link.download = fileName;
+        link.href = dataUrl;
+        link.click();
+      } else if (format === "pdf") {
+        const dataUrl = await toPng(node);
+        const pdf = new jsPDF();
+        const imgProps = pdf.getImageProperties(dataUrl);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("Session_Response.pdf");
+      }
+    } catch (err) {
+      console.error("Error generating image:", err);
+    }
+    setIsGenerating(false);
+    setShowDialog(false);
   };
 
   return (
-    <>
-      <div
-        className="relative min-h-screen bg-cover bg-bottom pb-6"
-        style={{ backgroundImage: "url('/bg.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
+    <div
+      className="relative min-h-screen bg-cover bg-bottom pb-6"
+      style={{ backgroundImage: "url('/bg.jpg')" }}
+    >
+      <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <button
-            onClick={() => window.history.back()}
-            className="text-blue-600 hover:underline py-6 text-[17px] font-medium flex justify-start items-center gap-2"
-          >
-            <FaArrowLeftLong /> Back to Responses
-          </button>
+      <div className="relative z-10 max-w-4xl mx-auto py-6">
+        <button
+          onClick={() => window.history.back()}
+          className="text-blue-500 hover:text-red-600 hover:underline text-[17px] font-medium flex justify-start items-center gap-2"
+        >
+          <FaArrowLeftLong /> Back to Reports
+        </button>
+      </div>
+
+      <div
+        ref={responseRef}
+        className="relative z-10 max-w-4xl mx-auto p-6 bg-white/70 rounded-lg shadow-md"
+      >
+        <h2 className="text-2xl font-bold pb-3">Pre-Session Check-in</h2>
+
+        <div className="text-gray-600 flex justify-start items-center gap-4 pb-6">
+          <p className="text-[16px] font-medium">{response.name}</p>
+          <p className="text-sm font-medium">{response.date}</p>
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto p-6 bg-white/70 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold pb-3">Pre-Session Check-in</h2>
-
-          <div className="text-gray-600 flex justify-start items-center gap-4 pb-6">
-            <p className="text-[16px] font-medium">{response.name}</p>
-            <p className="text-sm font-medium">{response.date}</p>
-          </div>
-
-          <div className="space-y-6">
-            {response.answers.map((item, index) => (
-              <div
-                key={index}
-                className="bg-white shadow p-4 rounded-lg hover:bg-[#33c9a7] hover:text-white transition-colors duration-200"
-              >
-                <p className="font-semibold text-lg">{item.question}</p>
-                <p className="text-[17px] mt-2">{item.answer}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-end">
+        <div className="space-y-6">
+          {response.answers.map((item, index) => (
+            <div
+              key={index}
+              className="bg-white shadow p-4 rounded-lg hover:bg-[#33c9a7] hover:text-white transition-colors duration-200"
+            >
+              <p className="font-semibold text-lg">{item.question}</p>
+              <p className="text-[17px] mt-2">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-6 flex justify-end">
+          <div className="mt-6 relative">
             <button
-              onClick={handleGenerateReport}
+              onClick={() => setShowDialog(true)}
               disabled={isGenerating}
-              className={`mt-6 flex justify-start items-center gap-2 font-medium px-6 py-3 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white rounded-full hover:opacity-90 transition ${
+              className={`flex items-center gap-2 font-medium px-6 py-3 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white rounded-full hover:opacity-90 transition ${
                 isGenerating ? "opacity-75 cursor-not-allowed" : ""
               }`}
             >
@@ -118,7 +144,6 @@ const QuestionaireResponse = () => {
                     ></path>
                   </svg>
                   Generating...
-                  <LuBrain />
                 </>
               ) : (
                 <>
@@ -129,7 +154,34 @@ const QuestionaireResponse = () => {
           </div>
         </div>
       </div>
-    </>
+
+      {showDialog && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-lg text-center">
+            <h3 className="text-lg font-semibold mb-4">
+              Download AI Report As
+            </h3>
+            <div className="space-y-2">
+              {["png", "jpeg", "pdf"].map((format) => (
+                <button
+                  key={format}
+                  onClick={() => downloadImage(format)}
+                  className="w-full px-4 py-2 rounded bg-[#33c9a7] text-white hover:bg-[#2dbd99] transition"
+                >
+                  {format.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowDialog(false)}
+              className="mt-4 text-sm text-gray-500 hover:underline"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

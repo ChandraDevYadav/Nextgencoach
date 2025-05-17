@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { IoAdd } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Pre-session");
 
   const handleSubmit = () => {
     if (!title.trim() || !category.trim()) return;
+
     onSubmit({ title, category });
+
+    toast.success("Questionnaire added!");
+
     setTitle("");
-    setCategory("");
+    setCategory("Pre-session");
+
     onClose();
   };
 
@@ -35,7 +41,8 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
           />
           <select
             className="text-[16px] w-full p-2 text-gray-500 bg-white border rounded mt-1"
-            defaultValue="Pre-session"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
           >
             <option value="Intake">Initial Intake Form</option>
             <option value="Pre-session">Pre-Session Check-in</option>

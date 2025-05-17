@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
-import { FaMicrophone, FaPowerOff } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { FaMicrophone } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaMicrophoneSlash } from "react-icons/fa6";
 
 const PracticeBot = () => {
-  const navigate = useNavigate();
-
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hello! How can I help you today?" },
   ]);
@@ -36,14 +36,6 @@ const PracticeBot = () => {
     recognitionRef.current = recognition;
   };
 
-  const endSession = () => {
-    if (recognitionRef.current) recognitionRef.current.stop();
-    setRecording(false);
-    setMessages([{ sender: "bot", text: "Session ended. Have a great day!" }]);
-
-    navigate("/");
-  };
-
   const botReply = (userText) => {
     let response = "I'm not sure I understand.";
 
@@ -58,11 +50,27 @@ const PracticeBot = () => {
     }, 1000);
   };
 
+  const handleEndSession = () => {
+    toast.info("Session ended. Returning to previous page...", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      onClose: () => {
+        window.history.back();
+      },
+    });
+  };
+
   return (
     <div
       className="w-full rounded-2xl shadow-2xl h-[600px] flex flex-col bg-cover bg-bottom"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
+      <ToastContainer />
+
       <div className="flex items-center gap-3 p-4 bg-white text-gray-800">
         <div className="w-8 h-8 rounded-full text-[#33C9A7] bg-[#1bfac685] flex items-center justify-center font-bold text-xl">
           <svg
@@ -72,10 +80,10 @@ const PracticeBot = () => {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-bot w-4 h-4 text-primary"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-bot w-4 h-4 text-primary"
           >
             <path d="M12 8V4H8"></path>
             <rect width="16" height="12" x="4" y="8" rx="2"></rect>
@@ -122,19 +130,20 @@ const PracticeBot = () => {
 
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white flex flex-col items-center gap-4">
         <div className="flex justify-center gap-6 items-center">
-          {" "}
           <button
             onClick={startListening}
             className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow transition ${
-              recording
-                ? "bg-red-500 animate-pulse"
-                : "bg-[#33C9A7] hover:bg-red-500"
+              recording ? "bg-red-500 animate-pulse" : "bg-[#33C9A7]"
             }`}
           >
-            <FaMicrophone size={28} className="m-auto" />
+            {recording ? (
+              <FaMicrophoneSlash size={28} className="m-auto" />
+            ) : (
+              <FaMicrophone size={28} className="m-auto" />
+            )}
           </button>
           <button
-            onClick={endSession}
+            onClick={handleEndSession}
             className="h-12 px-4 text-lg font-medium bg-gray-200 hover:bg-gray-300 rounded-full text-gray-800 shadow flex items-center gap-2"
           >
             End Session
@@ -142,7 +151,7 @@ const PracticeBot = () => {
         </div>
 
         <button
-          onClick={() => navigate("/skillbuilder")}
+          onClick={() => window.history.back()}
           className="mt-2 text-sm font-semibold flex justify-start items-center gap-2 text-gray-600 hover:text-gray-800"
         >
           <TbReload className="text-[#2bb297] text-sm" />
