@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 import Questionnaire from "../models/questionnaire.Model.js";
-import Client from "../models/client.Model.js";
+import User from "../models/user.Model.js";
 import { generateAIPrepReport } from "../services/aiService.js";
 import { sendQuestionnaireEmail } from "../services/emailService.js";
 
@@ -28,13 +29,17 @@ const getQuestionnaireById = asyncHandler(async (req, res) => {
 const createQuestionnaire = asyncHandler(async (req, res) => {
   const { client, type, title, questions, isTemplate, templateName } = req.body;
 
-  const clientExists = await Client.findOne({
-    _id: client,
-    user: req.user._id,
-  });
-  if (!clientExists && !isTemplate) {
-    res.status(400);
-    throw new Error("Client not found");
+  if (!isTemplate) {
+    if (!mongoose.Types.ObjectId.isValid(client)) {
+      res.status(400);
+      throw new Error("Invalid client ID");
+    }
+
+    const clientExists = await User.findById(client);
+    if (!clientExists) {
+      res.status(400);
+      throw new Error("Client (user) not found");
+    }
   }
 
   const questionnaire = new Questionnaire({
