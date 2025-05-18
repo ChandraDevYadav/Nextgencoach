@@ -6,10 +6,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
 
-import userRoutes from "./routes/user.Routes.js";
-import clientRoutes from "./routes/client.Routes.js";
 import questionnaireRoutes from "./routes/questionnaire.Routes.js";
-import sessionRoutes from "./routes/session.Routes.js";
+import sessionRoutes from "./routes/sessionPrep.Routes.js";
 import skillBuilderRoutes from "./routes/skillBuilder.Routes.js";
 import authRoutes from "./routes/auth.Routes.js";
 
@@ -22,26 +20,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
-
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error(err));
+  .catch((err) => console.error("Mongo Error:", err));
 
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/clients", clientRoutes);
 app.use("/api/questionnaires", questionnaireRoutes);
-app.use("/api/sessions", sessionRoutes);
+app.use("/api/session", sessionRoutes);
 app.use("/api/skill-builder", skillBuilderRoutes);
 
 app.use(errorHandler);

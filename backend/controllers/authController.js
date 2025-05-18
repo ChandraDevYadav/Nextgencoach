@@ -1,121 +1,75 @@
-import jwt from "jsonwebtoken";
 import User from "../models/user.Model.js";
-import asyncHandler from "express-async-handler";
-import generateToken from "../utils/generateToken.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
-const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email });
-
-  if (user && (await user.matchPassword(password))) {
-    generateToken(res, user._id);
-
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isCoach: user.isCoach,
-      isAdmin: user.isAdmin,
-      avatar: user.avatar,
-    });
-  } else {
-    res.status(401);
-    throw new Error("Invalid email or password");
-  }
-});
-
-const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, isCoach } = req.body;
-
-  const userExists = await User.findOne({ email });
-
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
-  }
-
-  const user = await User.create({
-    name,
-    email,
-    password,
-    isCoach,
+// Generate JWT token
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
   });
+};
 
-  if (user) {
-    generateToken(res, user._id);
+// Register user with hashed password
+export const registerUser = async (req, res) => {
+  try {
+    const { name, email, password, image } = req.body;
 
+    // Check if user exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new user
+    const user = await User.create({
+      name,
+      email,
+      image,
+      password: hashedPassword,
+    });
+
+    // Return user data + token
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      isCoach: user.isCoach,
-      isAdmin: user.isAdmin,
+      image: user.image,
+      token: generateToken(user._id),
     });
-  } else {
-    res.status(400);
-    throw new Error("Invalid user data");
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Registration failed", error: error.message });
   }
-});
+};
 
-const logoutUser = asyncHandler(async (req, res) => {
-  res.cookie("jwt", "", {
-    httpOnly: true,
-    expires: new Date(0),
-  });
+// Login user and compare password
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  res.status(200).json({ message: "Logged out successfully" });
-});
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Incorrect password" });
 
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404);
-    throw new Error("User not found");
-  }
-});
-
-const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-
-  if (user) {
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.coachingSpecialization =
-      req.body.coachingSpecialization || user.coachingSpecialization;
-    user.certification = req.body.certification || user.certification;
-    user.yearsOfExperience =
-      req.body.yearsOfExperience || user.yearsOfExperience;
-
-    if (req.body.password) {
-      user.password = req.body.password;
-    }
-
-    const updatedUser = await user.save();
-
+    // Return user data + token
     res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      isCoach: updatedUser.isCoach,
-      isAdmin: updatedUser.isAdmin,
-      coachingSpecialization: updatedUser.coachingSpecialization,
-      certification: updatedUser.certification,
-      yearsOfExperience: updatedUser.yearsOfExperience,
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      token: generateToken(user._id),
     });
-  } else {
-    res.status(404);
-    throw new Error("User not found");
+  } catch (error) {
+    res.status(500).json({ message: "Login failed", error: error.message });
   }
-});
-
-export {
-  authUser,
-  registerUser,
-  logoutUser,
-  getUserProfile,
-  updateUserProfile,
 };
