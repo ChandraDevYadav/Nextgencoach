@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
@@ -10,7 +10,7 @@ const Register = () => {
     password: "",
     isCoach: false,
   });
-  const { setUser } = useContext(AuthContext);
+  const { setUser } = useContext(useAuth);
   const navigate = useNavigate();
 
   const handleChange = (e) => {

@@ -1,33 +1,30 @@
-import { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import { createContext, useContext, useState } from "react";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [token, setToken] = useState(
+    () => localStorage.getItem("token") || null
+  );
 
-  const fetchUser = async () => {
-    try {
-      const { data } = await axios.get("/api/users/profile", {
-        withCredentials: true,
-      });
-      setUser(data);
-    } catch {
-      setUser(null);
-    } finally {
-      setAuthLoading(false);
-    }
+  const login = (token) => {
+    localStorage.setItem("token", token);
+    setToken(token);
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+  };
+
+  const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ user, setUser, authLoading }}>
+    <AuthContext.Provider value={{ token, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAuth = () => useContext(AuthContext);
