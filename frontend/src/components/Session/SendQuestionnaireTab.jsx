@@ -1,68 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddQuestionnaireDialog from "./AddQuestionnaireDialog";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import SendDialog from "./SendDialog";
 import { Toaster } from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const SendQuestionnaireTab = () => {
+  const { token } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuerySend, setSearchQuerySend] = useState("");
   const [expandedQuestionnaires, setExpandedQuestionnaires] = useState([]);
+  const [questionnaires, setQuestionnaires] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const questionnairesData = [
-    {
-      id: 1,
-      title: "Initial Intake Form",
-      type: "Intake",
-      questions: [
-        "What brings you to coaching at this time?",
-        "What are your top 3 goals for our coaching relationship?",
-        "How would you describe your leadership style?",
-        "What are your biggest professional challenges?",
-        "How do you handle conflict situations?",
-      ],
-    },
-    {
-      id: 2,
-      title: "Pre-Session Check-in",
-      type: "Pre-session",
-      questions: [
-        "What would you like to focus on in our upcoming session?",
-        "What progress have you made since our last session?",
-        "What challenges are you currently facing?",
-        "What insights have you gained?",
-        "What support do you need from me?",
-      ],
-    },
-  ];
+  // Fetch questionnaires from backend
+  useEffect(() => {
+    const fetchQuestionnaires = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/questionnaires", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setQuestionnaires(response.data);
+      } catch (error) {
+        console.error("Error fetching questionnaires:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleAddQuestionnaire = (data) => {
-    console.log("New Questionnaire:", data);
+    fetchQuestionnaires();
+  }, [token]);
+
+  const handleAddQuestionnaire = (newQuestionnaire) => {
+    setQuestionnaires(prev => [...prev, newQuestionnaire]);
   };
 
   const filterQuestionnaires = (questionnaire) => {
     const matchesSearch =
       searchQuerySend === "" ||
-      questionnaire.title
-        .toLowerCase()
-        .includes(searchQuerySend.toLowerCase()) ||
-      questionnaire.type
-        .toLowerCase()
-        .includes(searchQuerySend.toLowerCase()) ||
-      questionnaire.questions.some((q) =>
+      questionnaire.title.toLowerCase().includes(searchQuerySend.toLowerCase()) ||
+      questionnaire.type.toLowerCase().includes(searchQuerySend.toLowerCase()) ||
+      (questionnaire.questions && questionnaire.questions.some(q =>
         q.toLowerCase().includes(searchQuerySend.toLowerCase())
-      );
+      ));
     return matchesSearch;
   };
 
   const toggleExpand = (id) => {
-    setExpandedQuestionnaires((prev) =>
-      prev.includes(id) ? prev.filter((qid) => qid !== id) : [...prev, id]
+    setExpandedQuestionnaires(prev =>
+      prev.includes(id) ? prev.filter(qid => qid !== id) : [...prev, id]
     );
   };
 
-  const filteredQuestionnaires =
-    questionnairesData.filter(filterQuestionnaires);
+  const filteredQuestionnaires = questionnaires.filter(filterQuestionnaires);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
@@ -101,40 +102,60 @@ const SendQuestionnaireTab = () => {
       </div>
 
       <div className="space-y-4">
-        {filteredQuestionnaires.length > 0 ? (
+        {questionnaires.length === 0 ? (
+          <div className="bg-white rounded-lg p-8 text-center flex flex-col items-center">
+            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-700 mb-2">No questionnaires yet</h3>
+            <p className="text-gray-500 mb-4">Get started by creating your first questionnaire</p>
+            <button
+              onClick={() => setIsDialogOpen(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Create Questionnaire
+            </button>
+          </div>
+        ) : filteredQuestionnaires.length > 0 ? (
           filteredQuestionnaires.map((questionnaire) => {
-            const isExpanded = expandedQuestionnaires.includes(
-              questionnaire.id
-            );
+            const isExpanded = expandedQuestionnaires.includes(questionnaire._id);
             const visibleQuestions = isExpanded
-              ? questionnaire.questions
-              : questionnaire.questions.slice(0, 3);
+              ? questionnaire.questions || []
+              : (questionnaire.questions || []).slice(0, 3);
 
             return (
-              <div key={questionnaire.id} className="bg-white rounded-lg p-4">
+              <div key={questionnaire._id} className="bg-white rounded-lg p-4">
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-bold text-xl">{questionnaire.title}</h3>
                     <span className="text-gray-500">{questionnaire.type}</span>
                   </div>
                   <button className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-full flex gap-1">
-                    <SendDialog />
+                    <SendDialog questionnaireId={questionnaire._id} />
                   </button>
                 </div>
-                <ul className="list-disc ml-6 mt-2 text-gray-700">
-                  {visibleQuestions.map((question, i) => (
-                    <li key={i}>{question}</li>
-                  ))}
-                </ul>
-                {questionnaire.questions.length > 3 && (
-                  <button
-                    onClick={() => toggleExpand(questionnaire.id)}
-                    className="text-[#33c9a7] pl-2 underline text-sm mt-2"
-                  >
-                    {isExpanded
-                      ? "Show less"
-                      : `+${questionnaire.questions.length - 3} more questions`}
-                  </button>
+                {visibleQuestions.length > 0 ? (
+                  <>
+                    <ul className="list-disc ml-6 mt-2 text-gray-700">
+                      {visibleQuestions.map((question, i) => (
+                        <li key={i}>{question.questionText}</li>
+                      ))}
+                    </ul>
+                    {(questionnaire.questions?.length || 0) > 3 && (
+                      <button
+                        onClick={() => toggleExpand(questionnaire._id)}
+                        className="text-[#33c9a7] pl-2 underline text-sm mt-2"
+                      >
+                        {isExpanded
+                          ? "Show less"
+                          : `+${(questionnaire.questions?.length || 0) - 3} more questions`}
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-gray-500 mt-2">No questions in this questionnaire</p>
                 )}
               </div>
             );

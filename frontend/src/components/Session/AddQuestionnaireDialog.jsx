@@ -1,23 +1,58 @@
 import React, { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { RxCross2 } from "react-icons/rx";
 import { IoAdd } from "react-icons/io5";
 import toast from "react-hot-toast";
 
 const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
+  const { token } = useAuth(); 
+
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Pre-session");
+  const [isTemplate, setIsTemplate] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [questions, setQuestions] = useState([]);
 
-  const handleSubmit = () => {
-    if (!title.trim() || !category.trim()) return;
+  const handleSubmit = async () => {
+  if (!title.trim() || !category.trim()) {
+    toast.error("Please fill all required fields");
+    return;
+  }
 
-    onSubmit({ title, category });
+  try {
+    const response = await fetch("http://localhost:5000/api/questionnaires", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        type: category,
+        title,
+        questions,
+        isTemplate,
+        templateName: isTemplate ? templateName : undefined,
+      }),
+    });
 
-    toast.success("Questionnaire added!");
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Failed to create questionnaire");
+    
+    toast.success("Questionnaire created successfully!");
+    onSubmit(data);
+    resetForm();
+    onClose();
+  } catch (error) {
+    toast.error(error.message || "Failed to create questionnaire");
+  }
+};
 
+  const resetForm = () => {
     setTitle("");
     setCategory("Pre-session");
-
-    onClose();
+    setIsTemplate(false);
+    setTemplateName("");
+    setQuestions([]);
   };
 
   if (!isOpen) return null;
@@ -44,8 +79,8 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="Intake">Initial Intake Form</option>
-            <option value="Pre-session">Pre-Session Check-in</option>
+            <option value="intake">Initial Intake Form</option>
+            <option value="pre-session">Pre-Session Check-in</option>
           </select>
         </div>
         <div className="flex justify-end space-x-3 mt-6">
