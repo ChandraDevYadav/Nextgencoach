@@ -20,7 +20,7 @@ const Login = () => {
         { withCredentials: true }
       );
       login(data);
-      navigate("/"); // redirect to home after login
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }

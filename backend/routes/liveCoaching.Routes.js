@@ -5,9 +5,9 @@ import {
   updateSuggestions,
   sendSessionSummary as controllerSummary,
   addCoachFeedback,
-} from "../controllers/liveCoachingController.js";
+} from "../controllers/liveCoaching.Controller.js";
 
-import { sendSessionSummary as emailSummary } from "../controllers/summaryController.js";
+import { sendSessionSummary as emailSummary } from "../controllers/summary.Controller.js";
 
 const router = express.Router();
 

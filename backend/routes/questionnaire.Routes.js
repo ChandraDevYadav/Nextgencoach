@@ -7,7 +7,7 @@ import {
   sendQuestionnaire,
   generatePrepReport,
   getQuestionnaireTemplates,
-} from "../controllers/questionnaireController.js";
+} from "../controllers/questionnaire.Controller.js";
 import { protect } from "../middleware/auth.Middleware.js";
 
 const router = express.Router();

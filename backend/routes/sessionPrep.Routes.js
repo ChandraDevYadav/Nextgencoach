@@ -6,7 +6,7 @@ import {
   submitResponses,
   getSessionPrepById,
   getSessionPreparations,
-} from "../controllers/sessionPrepController.js";
+} from "../controllers/sessionPrep.Controller.js";
 import { protect } from "../middleware/auth.Middleware.js";
 
 const router = express.Router();
