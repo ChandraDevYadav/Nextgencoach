@@ -30,7 +30,7 @@ const createQuestionnaire = asyncHandler(async (req, res) => {
   const { client, type, title, questions, isTemplate, templateName } = req.body;
 
   if (!isTemplate) {
-    if (!mongoose.Types.ObjectId.isValid(client)) {
+    if (!client || !mongoose.Types.ObjectId.isValid(client)) {
       res.status(400);
       throw new Error("Invalid client ID");
     }
