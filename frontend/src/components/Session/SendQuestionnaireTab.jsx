@@ -132,9 +132,9 @@ const SendQuestionnaireTab = () => {
                     <h3 className="font-bold text-xl">{questionnaire.title}</h3>
                     <span className="text-gray-500">{questionnaire.type}</span>
                   </div>
-                  <button className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-full flex gap-1">
+                  <div className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-full flex gap-1">
                     <SendDialog questionnaireId={questionnaire._id} />
-                  </button>
+                  </div>
                 </div>
                 {visibleQuestions.length > 0 ? (
                   <>
@@ -155,7 +155,7 @@ const SendQuestionnaireTab = () => {
                     )}
                   </>
                 ) : (
-                  <p className="text-gray-500 mt-2">No questions in this questionnaire</p>
+                  <p className="text-gray-500 mt-2">No questions added for now</p>
                 )}
               </div>
             );

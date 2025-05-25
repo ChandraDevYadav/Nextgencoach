@@ -13,41 +13,49 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
   const [newQuestion, setNewQuestion] = useState("");
 
   const handleSubmit = async () => {
-    if (!title.trim() || !category.trim()) {
-      toast.error("Please fill in the title and category.");
-      return;
-    }
+  if (!title.trim() || !category.trim()) {
+    toast.error("Please fill in the title and category.");
+    return;
+  }
 
-    if (questions.length === 0) {
-      toast.error("Please add at least one question.");
-      return;
-    }
+  if (questions.length === 0) {
+    toast.error("Please add at least one question.");
+    return;
+  }
 
-    try {
-      const response = await fetch("http://localhost:5000/api/questionnaires", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: title.trim(),
-          type: category,
-          questions,
-        }),
-      });
+  const formattedQuestions = questions.map((q) => ({
+    questionText: q,
+    answer: "",
+  }));
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to create questionnaire");
+  try {
+    const response = await fetch("http://localhost:5000/api/questionnaires", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: title.trim(),
+        type: category,
+        questions: formattedQuestions,
+        isTemplate: true,
+        templateName: title.trim(),
+      }),
+    });
 
-      toast.success("Questionnaire created successfully!");
-      onSubmit(data);
-      resetForm();
-      onClose();
-    } catch (error) {
-      toast.error(error.message || "Failed to create questionnaire");
-    }
-  };
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Failed to create questionnaire");
+
+    toast.success("Questionnaire created successfully!");
+    onSubmit(data);
+    resetForm();
+    onClose();
+  } catch (error) {
+    toast.error(error.message || "Failed to create questionnaire");
+  }
+};
+
 
   const resetForm = () => {
     setTitle("");

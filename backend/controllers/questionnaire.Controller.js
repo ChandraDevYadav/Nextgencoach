@@ -44,7 +44,7 @@ const createQuestionnaire = asyncHandler(async (req, res) => {
 
   const questionnaire = new Questionnaire({
     user: req.user._id,
-    client: isTemplate ? null : client,
+    client: isTemplate ? "68297ae5c1eb1f6920c1f228" : client, //placeholerd client ID
     type,
     title,
     questions,
