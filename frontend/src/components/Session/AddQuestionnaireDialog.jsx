@@ -23,6 +23,7 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
       return;
     }
 
+    // eslint-disable-next-line no-unused-vars
     const formattedQuestions = questions.map((q) => ({
       questionText: q,
       answer: "",
