@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://api.testir.xyz/server26/api/auth/login",
         form
       );
       login(data.token);
