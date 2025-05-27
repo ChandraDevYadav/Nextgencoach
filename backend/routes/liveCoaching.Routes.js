@@ -3,19 +3,19 @@ import {
   createSession,
   getSessionById,
   updateSuggestions,
-  sendSessionSummary as controllerSummary,
+  updateSessionSummary,
   addCoachFeedback,
 } from "../controllers/liveCoaching.Controller.js";
 
-import { sendSessionSummary as emailSummary } from "../controllers/summary.Controller.js";
+import { sendSessionSummary as sendEmailSummary } from "../controllers/summary.Controller.js";
 
 const router = express.Router();
 
 router.post("/", createSession);
 router.get("/:id", getSessionById);
 router.put("/:id/suggestions", updateSuggestions);
-router.put("/:id/summary", controllerSummary);
+router.put("/:id/summary", updateSessionSummary);
 router.put("/:id/feedback", addCoachFeedback);
-router.post("/send-summary", emailSummary);
+router.post("/send-summary", sendEmailSummary);
 
 export default router;
