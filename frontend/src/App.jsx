@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import SessionPreparation from "./pages/SessionPreparation";
 import CoachingFeedback from "./pages/CoachingFeedback";
@@ -18,7 +17,6 @@ function App() {
   return (
     <>
       <Toaster position="top-right" />
-      <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

@@ -21,9 +21,13 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("/api/users/register", form, {
-        withCredentials: true,
-      });
+      const { data } = await axios.post(
+        "https://api.testir.xyz/server26/api/auth/register",
+        form,
+        {
+          withCredentials: true,
+        }
+      );
       setUser(data);
       navigate("/");
     } catch (err) {

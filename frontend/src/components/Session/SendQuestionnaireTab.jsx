@@ -18,11 +18,14 @@ const SendQuestionnaireTab = () => {
   useEffect(() => {
     const fetchQuestionnaires = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/questionnaires", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "https://api.testir.xyz/server26/api/questionnaires",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setQuestionnaires(response.data);
       } catch (error) {
         console.error("Error fetching questionnaires:", error);
@@ -35,23 +38,28 @@ const SendQuestionnaireTab = () => {
   }, [token]);
 
   const handleAddQuestionnaire = (newQuestionnaire) => {
-    setQuestionnaires(prev => [...prev, newQuestionnaire]);
+    setQuestionnaires((prev) => [...prev, newQuestionnaire]);
   };
 
   const filterQuestionnaires = (questionnaire) => {
     const matchesSearch =
       searchQuerySend === "" ||
-      questionnaire.title.toLowerCase().includes(searchQuerySend.toLowerCase()) ||
-      questionnaire.type.toLowerCase().includes(searchQuerySend.toLowerCase()) ||
-      (questionnaire.questions && questionnaire.questions.some(q =>
-        q.toLowerCase().includes(searchQuerySend.toLowerCase())
-      ));
+      questionnaire.title
+        .toLowerCase()
+        .includes(searchQuerySend.toLowerCase()) ||
+      questionnaire.type
+        .toLowerCase()
+        .includes(searchQuerySend.toLowerCase()) ||
+      (questionnaire.questions &&
+        questionnaire.questions.some((q) =>
+          q.toLowerCase().includes(searchQuerySend.toLowerCase())
+        ));
     return matchesSearch;
   };
 
   const toggleExpand = (id) => {
-    setExpandedQuestionnaires(prev =>
-      prev.includes(id) ? prev.filter(qid => qid !== id) : [...prev, id]
+    setExpandedQuestionnaires((prev) =>
+      prev.includes(id) ? prev.filter((qid) => qid !== id) : [...prev, id]
     );
   };
 
@@ -67,8 +75,6 @@ const SendQuestionnaireTab = () => {
 
   return (
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
-      <Toaster position="top-right" />
-
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold mb-2">Questionnaires</h2>
         <button
@@ -105,12 +111,26 @@ const SendQuestionnaireTab = () => {
         {questionnaires.length === 0 ? (
           <div className="bg-white rounded-lg p-8 text-center flex flex-col items-center">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              <svg
+                className="w-12 h-12 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-700 mb-2">No questionnaires yet</h3>
-            <p className="text-gray-500 mb-4">Get started by creating your first questionnaire</p>
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              No questionnaires yet
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Get started by creating your first questionnaire
+            </p>
             <button
               onClick={() => setIsDialogOpen(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -120,7 +140,9 @@ const SendQuestionnaireTab = () => {
           </div>
         ) : filteredQuestionnaires.length > 0 ? (
           filteredQuestionnaires.map((questionnaire) => {
-            const isExpanded = expandedQuestionnaires.includes(questionnaire._id);
+            const isExpanded = expandedQuestionnaires.includes(
+              questionnaire._id
+            );
             const visibleQuestions = isExpanded
               ? questionnaire.questions || []
               : (questionnaire.questions || []).slice(0, 3);
@@ -132,9 +154,9 @@ const SendQuestionnaireTab = () => {
                     <h3 className="font-bold text-xl">{questionnaire.title}</h3>
                     <span className="text-gray-500">{questionnaire.type}</span>
                   </div>
-                  <button className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-full flex gap-1">
+                  <p className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-full flex gap-1">
                     <SendDialog questionnaireId={questionnaire._id} />
-                  </button>
+                  </p>
                 </div>
                 {visibleQuestions.length > 0 ? (
                   <>
@@ -150,12 +172,16 @@ const SendQuestionnaireTab = () => {
                       >
                         {isExpanded
                           ? "Show less"
-                          : `+${(questionnaire.questions?.length || 0) - 3} more questions`}
+                          : `+${
+                              (questionnaire.questions?.length || 0) - 3
+                            } more questions`}
                       </button>
                     )}
                   </>
                 ) : (
-                  <p className="text-gray-500 mt-2">No questions in this questionnaire</p>
+                  <p className="text-gray-500 mt-2">
+                    No questions in this questionnaire
+                  </p>
                 )}
               </div>
             );

@@ -19,21 +19,25 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/questionnaires", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title,
-          type: category,
-          questions,
-        }),
-      });
+      const response = await fetch(
+        "https://api.testir.xyz/server26/api/questionnaires",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title,
+            type: category,
+            questions,
+          }),
+        }
+      );
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to create questionnaire");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to create questionnaire");
 
       toast.success("Questionnaire created successfully!");
       onSubmit(data);
