@@ -25,32 +25,56 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+// ✅ Allowed origins (local + deployed)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://nextgencoach.vercel.app",
+];
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// ✅ CORS config for Express
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+// ✅ MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("Mongo Error:", err));
 
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/questionnaires", questionnaireRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/skill-builder", skillBuilderRoutes);
 app.use("/api/live-coaching", liveCoachingRoutes);
 
+// ✅ Error handler
 app.use(errorHandler);
 
+// ✅ Socket.io with CORS
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+// ✅ Socket.io events
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
@@ -76,6 +100,7 @@ io.on("connection", (socket) => {
   });
 });
 
+// ✅ AI suggestion logic
 function generateAISuggestions(text) {
   return [
     "Can you expand on that?",
@@ -96,6 +121,7 @@ function generateAIPracticeReply(text) {
   return "That's interesting. Can you elaborate on that?";
 }
 
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
