@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { RxCross2 } from "react-icons/rx";
 import { IoAdd } from "react-icons/io5";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet";
 
 const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
   const { token } = useAuth();
@@ -77,6 +78,11 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 flex bg-black/90 items-center justify-center z-50">
+      <Helmet>
+        <title>Add Questionnaires - NextGenCoach</title>
+        <meta name="description" content="Add and create a template of questions to send to clients" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
         <div className="flex justify-between items-start">
           <h2 className="text-lg font-semibold mb-4">Add New Questionnaire</h2>

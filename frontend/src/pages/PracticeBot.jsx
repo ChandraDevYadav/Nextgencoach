@@ -4,6 +4,7 @@ import { TbReload } from "react-icons/tb";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaMicrophoneSlash } from "react-icons/fa6";
+import { Helmet } from "react-helmet";
 
 const PracticeBot = () => {
   const [messages, setMessages] = useState([
@@ -69,6 +70,11 @@ const PracticeBot = () => {
       className="w-full rounded-2xl shadow-2xl h-[600px] flex flex-col bg-cover bg-bottom"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
+      <Helmet>
+        <title>Practice Coaching - NextGenCoach</title>
+        <meta name="description" content="Practice Coaching with your custom created avatar" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <ToastContainer />
 
       <div className="flex items-center gap-3 p-4 bg-white text-gray-800">

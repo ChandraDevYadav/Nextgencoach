@@ -3,6 +3,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
 import { toPng, toJpeg } from "html-to-image";
 import jsPDF from "jspdf";
+import { Helmet } from "react-helmet";
 
 const QuestionaireResponse = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -79,6 +80,11 @@ const QuestionaireResponse = () => {
       className="relative min-h-screen bg-cover bg-bottom pb-6"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
+      <Helmet>
+        <title>Client Answers - NextGenCoach</title>
+        <meta name="description" content="Answers from the client for your questionnaires" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
       <div className="relative z-10 max-w-4xl mx-auto py-6">

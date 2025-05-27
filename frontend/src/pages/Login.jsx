@@ -1,9 +1,11 @@
+import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import {Helmet} from "react-helmet";
 
 const Login = () => {
   const { login } = useAuth();
@@ -34,6 +36,11 @@ const Login = () => {
         backgroundImage: "url('/bg.jpg')",
       }}
     >
+      <Helmet>
+        <title>Login - NextGenCoach</title>
+        <meta name="description" content="Login to your NextGenCoach account" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg p-8 w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

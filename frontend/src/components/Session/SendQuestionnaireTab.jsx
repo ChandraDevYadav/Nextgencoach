@@ -5,6 +5,7 @@ import SendDialog from "./SendDialog";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const SendQuestionnaireTab = () => {
   const { token } = useAuth();
@@ -76,6 +77,11 @@ const SendQuestionnaireTab = () => {
   return (
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
       <div className="flex justify-between items-center">
+        <Helmet>
+          <title>Send Questionnaires - NextGenCoach</title>
+          <meta name="description" content="Send and manage your questionnaires" />
+          <link rel="icon" href="/favicon.ico" />
+        </Helmet>
         <h2 className="text-xl font-semibold mb-2">Questionnaires</h2>
         <button
           onClick={() => setIsDialogOpen(true)}

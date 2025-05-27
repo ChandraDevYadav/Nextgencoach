@@ -4,6 +4,7 @@ import { CgNotes } from "react-icons/cg";
 import { RiUserLine } from "react-icons/ri";
 import { RxCalendar } from "react-icons/rx";
 import { FaMagnifyingGlass, FaAngleRight } from "react-icons/fa6";
+import { Helmet } from "react-helmet";
 
 const resultsData = [
   {
@@ -57,6 +58,11 @@ const ResultsTab = ({
 
   return (
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
+      <Helmet>
+        <title>Questionnaire Results - NextGenCoach</title>
+        <meta name="description" content="Results obtained from the clients for the sent questionnaire" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <h2 className="text-xl font-semibold mb-4">Questionnaire Results</h2>
 
       <div className="flex justify-between items-center gap-4">
