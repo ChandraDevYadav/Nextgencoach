@@ -1,35 +1,38 @@
 import { useState, useRef } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
+import axios from "axios";
 
-const clients = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    position: "VP of Marketing",
-    company: "Innovate Tech Solutions",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    position: "Senior Product Manager",
-    company: "Future Systems Inc",
-  },
-  {
-    id: 3,
-    name: "Elena Rodriguez",
-    position: "Director of Operations",
-    company: "Global Dynamics",
-  },
-];
-
-export default function SendDialog() {
+export default function SendDialog({ questionnaireId }) {
+  const { token } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedClients, setSelectedClients] = useState([]);
 
   const isSending = useRef(false);
+
+  const clients = [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      position: "VP of Marketing",
+      company: "Innovate Tech Solutions",
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      position: "Senior Product Manager",
+      company: "Future Systems Inc",
+    },
+    {
+      id: 3,
+      name: "Elena Rodriguez",
+      position: "Director of Operations",
+      company: "Global Dynamics",
+    },
+  ];
 
   const filteredClients = clients.filter(
     (client) =>
@@ -46,22 +49,34 @@ export default function SendDialog() {
     }
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (isSending.current) return;
     isSending.current = true;
 
-    if (selectedClients.length > 0) {
-      toast.success(
-        `Sending to: ${selectedClients.map((c) => c.name).join(", ")}`
+    if (selectedClients.length === 0) {
+      toast.error("Please select at least one client.");
+      isSending.current = false;
+      return;
+    }
+
+    try {
+      await axios.post(`/api/questionnaires/${questionnaireId}/send`,{}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
       );
+      toast.success("Questionnaire sent successfully!");
       setIsOpen(false);
       setSelectedClients([]);
       setSearch("");
-    } else {
-      toast.error("Please select at least one client.");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to send questionnaire."
+      );
+    } finally {
+      isSending.current = false;
     }
-
-    isSending.current = false;
   };
 
   return (
@@ -128,7 +143,9 @@ export default function SendDialog() {
                   >
                     <div>
                       <p className="font-medium text-gray-700">{client.name}</p>
-                      <p className="text-sm text-gray-600">{client.position}</p>
+                      <p className="text-sm text-gray-600">
+                        {client.position}
+                      </p>
                       <p className="text-sm text-gray-500">{client.company}</p>
                     </div>
                     {selectedClients.some((c) => c.id === client.id) && (

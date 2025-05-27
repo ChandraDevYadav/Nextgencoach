@@ -14,9 +14,19 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
 
   const handleSubmit = async () => {
     if (!title.trim() || !category.trim()) {
-      toast.error("Please fill all required fields");
+      toast.error("Please fill in the title and category.");
       return;
     }
+
+    if (questions.length === 0) {
+      toast.error("Please add at least one question.");
+      return;
+    }
+
+    const formattedQuestions = questions.map((q) => ({
+      questionText: q,
+      answer: "",
+    }));
 
     try {
       const response = await fetch(
@@ -56,8 +66,8 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
   };
 
   const addQuestion = () => {
-    if (newQuestion.trim() !== "") {
-      setQuestions((prev) => [...prev, newQuestion.trim()]);
+    if (newQuestion.trim()) {
+      setQuestions([...questions, newQuestion.trim()]);
       setNewQuestion("");
     }
   };
