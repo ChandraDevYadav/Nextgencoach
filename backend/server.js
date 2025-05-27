@@ -11,9 +11,9 @@ import "dotenv/config";
 
 import questionnaireRoutes from "./routes/questionnaire.Routes.js";
 import sessionRoutes from "./routes/sessionPrep.Routes.js";
-import skillBuilderRoutes from "./routes/skillBuilderRoutes.js";
+import skillBuilderRoutes from "./routes/skillBuilder.Routes.js";
 import authRoutes from "./routes/auth.Routes.js";
-import liveCoachingRoutes from "./routes/liveCoachingRoutes.js";
+import liveCoachingRoutes from "./routes/liveCoaching.Routes.js";
 
 import { errorHandler } from "./middleware/errorMiddleware.js";
 

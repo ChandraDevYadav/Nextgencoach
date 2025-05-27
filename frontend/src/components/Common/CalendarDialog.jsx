@@ -35,7 +35,6 @@ const CalendarDialog = ({ title = "Calendar", sessions = [], onClose }) => {
           className="mx-auto rounded-lg border-none shadow-sm"
         />
 
-        {/* Session List */}
         <ul className="mt-6 space-y-3 text-sm">
           {sessions.length > 0 ? (
             sessions.map((s, i) => (

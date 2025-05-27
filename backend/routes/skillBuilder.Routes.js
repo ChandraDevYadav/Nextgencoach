@@ -4,7 +4,7 @@ import {
   getAvatarsByUser,
   getAvatarById,
   deleteAvatar,
-} from "../controllers/skillAvatarController.js";
+} from "../controllers/skillAvatar.Controller.js";
 import { protect } from "../middleware/auth.Middleware.js";
 
 const router = express.Router();
