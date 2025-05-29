@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
+import ZoomMeetingCreator from "./components/LiveCoaching/ZoomMeetingCreator";
 
 function App() {
   return (
@@ -43,7 +44,7 @@ function App() {
           path="/live"
           element={
             <ProtectedRoute>
-              <LiveCoaching />
+              <ZoomMeetingCreator />
             </ProtectedRoute>
           }
         />

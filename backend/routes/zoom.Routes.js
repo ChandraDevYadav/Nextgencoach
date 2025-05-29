@@ -1,7 +1,8 @@
 import express from "express";
+import { createZoomMeeting } from "../controllers/zoom.Controller.js";
+
 const router = express.Router();
-import zoomController from "../controllers/zoom.Controller";
 
-router.post("/create-meeting", zoomController.createMeeting);
+router.post("/create-meeting", createZoomMeeting);
 
-module.exports = router;
+export default router;

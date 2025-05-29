@@ -14,7 +14,8 @@ import sessionRoutes from "./routes/sessionPrep.Routes.js";
 import skillBuilderRoutes from "./routes/skillBuilder.Routes.js";
 import authRoutes from "./routes/auth.Routes.js";
 import liveCoachingRoutes from "./routes/liveCoaching.Routes.js";
-
+import zoomRoutes from "./routes/zoom.Routes.js";
+import audioRoute from "./routes/audio.Route.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
@@ -61,6 +62,8 @@ app.use("/api/questionnaires", questionnaireRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/skill-builder", skillBuilderRoutes);
 app.use("/api/live-coaching", liveCoachingRoutes);
+app.use("/api/zoom", zoomRoutes);
+app.use("/api/audio", audioRoute);
 
 // ✅ Error handler
 app.use(errorHandler);
