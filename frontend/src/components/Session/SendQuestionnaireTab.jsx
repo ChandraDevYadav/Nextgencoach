@@ -78,7 +78,7 @@ const SendQuestionnaireTab = () => {
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
       <div className="flex justify-between items-center">
         <Helmet>
-          <title>Send Questionnaires - NextGenCoach</title>
+          <title>Manage Questionnaire - NextGenCoach</title>
           <meta name="description" content="Send and manage your questionnaires" />
           <link rel="icon" href="/favicon.ico" />
         </Helmet>

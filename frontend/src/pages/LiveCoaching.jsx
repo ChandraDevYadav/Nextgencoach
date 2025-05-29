@@ -8,7 +8,7 @@ const LiveCoaching = () => {
   return (
     <div className="flex h-screen">
       <Helmet>
-        <title>Live Coaching</title>
+        <title>Live Coaching - NextGenCoach</title>
         <meta name="description" content="Live coaching session with real-time video and suggested questions." />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
