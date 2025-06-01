@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import qs from "qs";
 dotenv.config();
 
-// Helper to get Zoom access token using account credentials (Server-to-Server OAuth)
 const getZoomAccessToken = async () => {
   const tokenUrl = "https://zoom.us/oauth/token";
   const authHeader = Buffer.from(
@@ -29,7 +28,6 @@ const getZoomAccessToken = async () => {
   }
 };
 
-// Controller to create a Zoom meeting
 export const createZoomMeeting = async (req, res) => {
   try {
     const accessToken = await getZoomAccessToken();
@@ -38,8 +36,8 @@ export const createZoomMeeting = async (req, res) => {
       "https://api.zoom.us/v2/users/me/meetings",
       {
         topic: "NextGen Coaching Session",
-        type: 1, // 1 = Instant meeting
-        password: "coach123", // Optional
+        type: 1,
+        password: "coach123",
         settings: {
           host_video: true,
           participant_video: true,

@@ -24,7 +24,7 @@ router.post("/transcribe", upload.single("audio"), async (req, res) => {
       messages: [{ role: "user", content: prompt }],
     });
 
-    fs.unlinkSync(audioPath); // delete temp file
+    fs.unlinkSync(audioPath);
 
     res.json({
       transcript: transcription.text,

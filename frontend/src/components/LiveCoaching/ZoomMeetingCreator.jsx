@@ -35,10 +35,8 @@ const ZoomMeetingCreator = () => {
       className="relative min-h-screen flex justify-center items-start bg-cover bg-bottom"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
-      {/* Blur and light overlay */}
       <div className="absolute inset-0 bg-white/10 backdrop-blur-lg z-0" />
 
-      {/* Content container */}
       <div className="relative z-10 w-full max-w-xl bg-white/90 backdrop-blur-md rounded-xl shadow-md p-8 mt-8 space-y-6">
         <h2 className="text-2xl font-semibold text-gray-700 text-center">
           Create Zoom Meeting
