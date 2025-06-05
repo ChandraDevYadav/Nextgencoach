@@ -7,11 +7,10 @@ import {
 
 export const createMeetingBot = async (req, res) => {
   try {
-    // Customize your bot parameters based on your needs
     const botData = {
       name: "MERN Meeting Assistant",
       transcription_options: {
-        engine: "assembly_ai", // or 'deepgram'
+        engine: "assembly_ai",
         generate_summary: true,
         generate_chapters: true,
         generate_suggestions: true,
@@ -20,8 +19,8 @@ export const createMeetingBot = async (req, res) => {
         destination_url: `${process.env.BACKEND_URL}/api/transcription-webhook`,
       },
       summary_options: {
-        format: "bullet_points", // or 'paragraph'
-        length: "medium", // 'short', 'medium', 'long'
+        format: "bullet_points",
+        length: "medium",
       },
     };
 
@@ -54,7 +53,6 @@ export const fetchMeetingData = async (req, res) => {
     res.status(200).json({
       transcription,
       summary,
-      // You can add suggestions here if available
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
