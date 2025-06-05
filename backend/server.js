@@ -15,8 +15,11 @@ import skillBuilderRoutes from "./routes/skillBuilder.Routes.js";
 import authRoutes from "./routes/auth.Routes.js";
 import liveCoachingRoutes from "./routes/liveCoaching.Routes.js";
 import zoomRoutes from "./routes/zoom.Routes.js";
-import audioRoute from "./routes/audio.Route.js";
+import recallBotRoutes from "./routes/recallBot.Routes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
+import socketHandler from "./socket/socketHandler.js";
+import botRoutes from "./routes/bot.Routes.js";
+import transcriptRoutes from "./routes/transcript.Routes.js";
 
 dotenv.config();
 
@@ -26,13 +29,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Allowed origins (local + deployed)
 const allowedOrigins = [
   "http://localhost:5173",
   "https://nextgencoach.vercel.app",
 ];
 
-// ✅ CORS config for Express
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -50,25 +51,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// ✅ MongoDB connection
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("Mongo Error:", err));
 
-// ✅ Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/questionnaires", questionnaireRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/skill-builder", skillBuilderRoutes);
 app.use("/api/live-coaching", liveCoachingRoutes);
 app.use("/api/zoom", zoomRoutes);
-app.use("/api/audio", audioRoute);
+app.use("/api/recall", recallBotRoutes);
+app.use("/api", botRoutes);
 
-// ✅ Error handler
+// Error handler
 app.use(errorHandler);
 
-// ✅ Socket.io with CORS
+// Setup Socket.IO and delegate to handler
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -76,53 +78,7 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
-// ✅ Socket.io events
-io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
-
-  socket.on("transcript", (data) => {
-    const suggestions = generateAISuggestions(data.text);
-    socket.emit("suggestions", suggestions);
-  });
-
-  socket.on("startPracticeSession", (avatarConfig) => {
-    const intro = `Hello, I'm ${
-      avatarConfig.name || "your coach"
-    }. Let's get started.`;
-    socket.emit("practiceStarted", { message: intro });
-  });
-
-  socket.on("practiceMessage", (msg) => {
-    const reply = generateAIPracticeReply(msg.text);
-    socket.emit("practiceReply", { text: reply });
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
-  });
-});
-
-// ✅ AI suggestion logic
-function generateAISuggestions(text) {
-  return [
-    "Can you expand on that?",
-    "What support do you need right now?",
-    "How did that make you feel?",
-  ];
-}
-
-function generateAIPracticeReply(text) {
-  if (!text) return "Can you say that again?";
-  const lower = text.toLowerCase();
-  if (lower.includes("goal"))
-    return "What does achieving that goal mean to you?";
-  if (lower.includes("struggle"))
-    return "Tell me more about what you're struggling with.";
-  if (lower.includes("motivate"))
-    return "What usually helps you stay motivated?";
-  return "That's interesting. Can you elaborate on that?";
-}
+socketHandler(io);
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;

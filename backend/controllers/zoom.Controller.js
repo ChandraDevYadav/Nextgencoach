@@ -1,6 +1,6 @@
 import axios from "axios";
+import crypto from "crypto";
 import dotenv from "dotenv";
-import qs from "qs";
 dotenv.config();
 
 const getZoomAccessToken = async () => {
@@ -9,23 +9,18 @@ const getZoomAccessToken = async () => {
     `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
   ).toString("base64");
 
-  try {
-    const response = await axios.post(
-      `${tokenUrl}?grant_type=account_credentials&account_id=${process.env.ZOOM_ACCOUNT_ID}`,
-      {},
-      {
-        headers: {
-          Authorization: `Basic ${authHeader}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  const response = await axios.post(
+    `${tokenUrl}?grant_type=account_credentials&account_id=${process.env.ZOOM_ACCOUNT_ID}`,
+    {},
+    {
+      headers: {
+        Authorization: `Basic ${authHeader}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
-    return response.data.access_token;
-  } catch (error) {
-    console.error("Failed to get Zoom access token", error.response?.data);
-    throw new Error("Zoom authorization failed");
-  }
+  return response.data.access_token;
 };
 
 export const createZoomMeeting = async (req, res) => {
@@ -35,9 +30,9 @@ export const createZoomMeeting = async (req, res) => {
     const response = await axios.post(
       "https://api.zoom.us/v2/users/me/meetings",
       {
-        topic: "NextGen Coaching Session",
+        topic: req.body.topic || "Coaching Session",
         type: 1,
-        password: "coach123",
+        password: "123456",
         settings: {
           host_video: true,
           participant_video: true,
@@ -52,16 +47,26 @@ export const createZoomMeeting = async (req, res) => {
     );
 
     const { id, join_url, password } = response.data;
-    res.status(200).json({
-      meetingNumber: id,
-      joinUrl: join_url,
-      password,
-    });
+    res.json({ meetingNumber: id, joinUrl: join_url, password });
   } catch (err) {
-    console.error(
-      "Error creating Zoom meeting:",
-      err.response?.data || err.message
-    );
-    res.status(500).json({ message: "Failed to create Zoom meeting" });
+    res.status(500).json({ message: "Failed to create meeting" });
   }
+};
+
+export const generateZoomSignature = (req, res) => {
+  const { meetingNumber, role } = req.body;
+  const sdkKey = process.env.ZOOM_CLIENT_ID;
+  const sdkSecret = process.env.ZOOM_CLIENT_SECRET;
+  const timestamp = new Date().getTime() - 30000;
+  const msg = Buffer.from(
+    `${sdkKey}${meetingNumber}${timestamp}${role}`
+  ).toString("base64");
+  const hash = crypto
+    .createHmac("sha256", sdkSecret)
+    .update(msg)
+    .digest("base64");
+  const signature = Buffer.from(
+    `${sdkKey}.${meetingNumber}.${timestamp}.${role}.${hash}`
+  ).toString("base64");
+  res.json({ signature });
 };

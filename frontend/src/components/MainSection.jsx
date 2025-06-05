@@ -18,7 +18,7 @@ const cards = [
     title: "Live Coaching",
     description:
       "Capture and analyze sessions with video and audio tools for enhanced insights.",
-    link: "/live",
+    link: "/live/create",
   },
   {
     icon: <MdOutlineFeed className="w-8 h-8" />,
@@ -66,7 +66,7 @@ const MainSection = () => {
 
   const handleConfirm = () => {
     setShowDialog(false);
-    navigate("/live");
+    navigate("/live/create");
   };
 
   const handleCancel = () => {

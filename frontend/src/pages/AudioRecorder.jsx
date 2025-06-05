@@ -48,7 +48,7 @@ export default function AudioRecorder() {
 
     // Prompt for Recall Bot info
     const meeting_url = prompt("Enter meeting URL:");
-    const platform = prompt("Enter platform (e.g., zoom):");
+    const platform = prompt("Enter platform (e.g., zoom, google_meet):");
 
     if (!meeting_url || !platform) {
       alert("Please provide both meeting URL and platform.");
@@ -129,23 +129,21 @@ export default function AudioRecorder() {
   };
 
   return (
-    <div className="p-8 min-h-screen">
-      <div className="flex justify-end gap-4 mb-8">
+    <div className="px-32 pt-12">
+      <div className="flex justify-start gap-4 mb-4">
         <button
           onClick={startScreenAndAudioRecording}
           disabled={isRecording}
-          className="relative text-center font-medium overflow-hidden bg-gradient-to-r from-[#1003f9] to-[#030ff2] text-white rounded px-4 py-2 group"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
         >
-          <span className="absolute inset-0 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0 rounded"></span>
-          <span className="relative z-10 text-center">Start Recording</span>
+          Start Recording
         </button>
         <button
           onClick={stopRecording}
           disabled={!isRecording}
-          className="relative text-center font-medium overflow-hidden bg-gradient-to-r from-[#f90303] to-[#f26703] text-white rounded px-4 py-2 group disabled:opacity-50"
+          className="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded disabled:opacity-50"
         >
-          <span className="absolute inset-0 bg-gradient-to-r from-[#040404] to-[#2a2b2b] transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0 rounded"></span>
-          <span className="relative z-10 text-center">Stop Recording</span>
+          Stop Recording
         </button>
       </div>
 
@@ -155,7 +153,7 @@ export default function AudioRecorder() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
         <div>
-          <h3 className="font-semibold text-lg mb-2 text-gray-800">
+          <h3 className="font-semibold text-lg mb-2 text-blue-600">
             Live Transcription
           </h3>
           <div className="bg-gray-100 p-4 rounded min-h-[150px]">

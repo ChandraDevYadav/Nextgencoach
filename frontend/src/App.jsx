@@ -14,6 +14,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import ZoomMeetingCreator from "./components/LiveCoaching/ZoomMeetingCreator";
+import ZoomMeetingViewer from "./components/LiveCoaching/ZoomMeetingViewer";
+import AudioRecorder from "./pages/AudioRecorder";
 
 function App() {
   return (
@@ -41,10 +43,26 @@ function App() {
           }
         />
         <Route
-          path="/live"
+          path="/live/create"
           element={
             <ProtectedRoute>
               <ZoomMeetingCreator />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/live/join"
+          element={
+            <ProtectedRoute>
+              <ZoomMeetingViewer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/transcription"
+          element={
+            <ProtectedRoute>
+              <AudioRecorder />
             </ProtectedRoute>
           }
         />
