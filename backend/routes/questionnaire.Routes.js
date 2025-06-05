@@ -5,6 +5,7 @@ import {
   createQuestionnaire,
   updateQuestionnaire,
   sendQuestionnaire,
+  getCompletedQuestionnaires,
   generatePrepReport,
   getQuestionnaireTemplates,
 } from "../controllers/questionnaire.Controller.js";
@@ -28,6 +29,8 @@ router
   .put(protect, updateQuestionnaire);
 
 router.route("/:id/send").post(protect, sendQuestionnaire);
+
+router.route("/results").get(protect, getCompletedQuestionnaires);
 
 router.route("/:id/report").post(protect, generatePrepReport);
 

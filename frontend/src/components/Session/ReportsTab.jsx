@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { CgNotes } from "react-icons/cg";
 import { FaMagnifyingGlass, FaAngleRight } from "react-icons/fa6";
+import { Helmet } from "react-helmet";
 
 const reportsData = [
   {
@@ -58,6 +59,11 @@ const ReportsTab = ({
 
   return (
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
+      <Helmet>
+        <title>Questionnaire Analysis Reports - NextGenCoach</title>
+        <meta name="description" content="Analysed reports of the the questionnaire and its answers" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <h2 className="text-xl font-semibold mb-2">AI-Generated Reports</h2>
 
       <div className="flex justify-between items-center gap-4 py-2">

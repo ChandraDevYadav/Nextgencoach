@@ -1,11 +1,17 @@
 import React from "react";
 import { GoDeviceCameraVideo } from "react-icons/go";
 import { GrMicrophone } from "react-icons/gr";
+import { Helmet } from "react-helmet";
 
 const AlertDialog = ({ onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-gray-100 rounded-xl p-6 w-[90%] max-w-md shadow-lg">
+        <Helmet>
+          <title>Request Access - NextGenCoach</title>
+          <meta name="description" content="Give Access connect to your Zoom meeting for the coaching session" />
+          <link rel="icon" href="/favicon.ico" />
+        </Helmet>
         <h2 className="text-xl font-bold mb-4">Connect to Zoom Meeting</h2>
         <p className="mb-6">
           NextGen Coach needs permission to connect to your ongoing Zoom meeting

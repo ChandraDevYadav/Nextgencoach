@@ -4,6 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 export default function SendDialog({ questionnaireId }) {
   const { token } = useAuth();
@@ -81,6 +82,11 @@ export default function SendDialog({ questionnaireId }) {
 
   return (
     <>
+      <Helmet>
+        <title>Send Dialog - NextGenCoach</title>
+        <meta name="description" content="Send questions to desired clients" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <button
         onClick={() => setIsOpen(true)}
         className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] font-medium text-white hover:text-red-600 rounded-full flex items-center gap-2"

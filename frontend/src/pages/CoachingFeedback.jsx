@@ -4,6 +4,7 @@ import { FiSearch, FiUser, FiCalendar } from "react-icons/fi";
 import { GrNotes } from "react-icons/gr";
 import { FaAngleRight, FaArrowLeftLong } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
+import { Helmet } from "react-helmet";
 
 const sessions = [
   {
@@ -171,6 +172,11 @@ const CoachingFeedback = () => {
       className="relative min-h-screen bg-cover bg-bottom"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
+      <Helmet>
+        <title>Coaching Feedback - NextGenCoach</title>
+        <meta name="description" content="AI generated feedback for the live seesion held" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <div className="absolute inset-0 bg-white/30 backdrop-blur-lg z-0 rounded-lg" />
 
       <div className="relative z-10 max-w-4xl mx-auto py-10 rounded-lg">

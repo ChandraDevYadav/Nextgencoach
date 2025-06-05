@@ -110,6 +110,30 @@ const sendQuestionnaire = asyncHandler(async (req, res) => {
   }
 });
 
+const getCompletedQuestionnaires = asyncHandler(async (req, res) => {
+  const results = await Questionnaire.find({
+    user: req.user._id,
+    status: "completed",
+  })
+    .populate("client", "name email")
+    .select("client completedDate title status questions");
+
+  const formattedResults = results.map((q) => ({
+    _id: q._id,
+    name: q.client.name,
+    date: q.completedDate?.toISOString().split("T")[0],
+    form: q.title,
+    status: q.status,
+    answers: q.questions.map((q) => ({
+      question: q.question,
+      answer: q.answer,
+    })),
+  }));
+
+  res.json(formattedResults);
+});
+
+
 const generatePrepReport = asyncHandler(async (req, res) => {
   const questionnaire = await Questionnaire.findOne({
     _id: req.params.id,
@@ -151,6 +175,7 @@ export {
   createQuestionnaire,
   updateQuestionnaire,
   sendQuestionnaire,
+  getCompletedQuestionnaires,
   generatePrepReport,
   getQuestionnaireTemplates,
 };

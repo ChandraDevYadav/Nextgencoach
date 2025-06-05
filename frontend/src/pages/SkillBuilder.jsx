@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const SkillBuilder = () => {
   const navigate = useNavigate();
@@ -31,6 +32,11 @@ const SkillBuilder = () => {
       className="relative min-h-screen bg-cover bg-bottom"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
+      <Helmet>
+        <title>Create Custom Avatar - NextGenCoach</title>
+        <meta name="description" content="Create a custom avatar for you to start practicing coaching" />
+        <link rel="icon" href="/favicon.ico" />
+      </Helmet>
       <div className="absolute inset-0 bg-white/20 backdrop-blur-lg z-0" />
 
       <div className="relative z-10 max-w-4xl mx-auto pb-12">

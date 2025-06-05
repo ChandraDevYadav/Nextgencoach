@@ -80,7 +80,7 @@ function App() {
           }
         />
         <Route
-          path="/session/question-response"
+          path="/session/question-response/:id"
           element={
             <ProtectedRoute>
               <QuestionaireResponse />
