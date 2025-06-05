@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AudioRecorder from "./AudioRecorder";
+import MeetingBot from "./MeetingBot";
 // import { useNavigate } from "react-router-dom";
 
 const ZoomMeetingCreator = () => {
@@ -12,16 +13,13 @@ const ZoomMeetingCreator = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(
-        "https://api.testir.xyz/server26/api/zoom/create-meeting",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ topic: "Test Meeting", duration: 30 }),
-        }
-      );
+      const res = await fetch("http://localhost:5000/api/zoom/create-meeting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ topic: "Test Meeting", duration: 30 }),
+      });
 
       if (!res.ok) {
         throw new Error("Failed to create meeting");
@@ -106,6 +104,7 @@ const ZoomMeetingCreator = () => {
       </div>
       <div className="col-span-7 z-10">
         <AudioRecorder />
+        <MeetingBot />
       </div>
     </div>
   );
