@@ -34,7 +34,10 @@ const SkillBuilder = () => {
     >
       <Helmet>
         <title>Create Custom Avatar - NextGenCoach</title>
-        <meta name="description" content="Create a custom avatar for you to start practicing coaching" />
+        <meta
+          name="description"
+          content="Create a custom avatar for you to start practicing coaching"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
       <div className="absolute inset-0 bg-white/20 backdrop-blur-lg z-0" />
@@ -272,7 +275,7 @@ const SkillBuilder = () => {
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  class="lucide lucide-bot w-4 h-4 ml-2"
+                  className="lucide lucide-bot w-4 h-4 ml-2"
                 >
                   <path d="M12 8V4H8"></path>
                   <rect width="16" height="12" x="4" y="8" rx="2"></rect>

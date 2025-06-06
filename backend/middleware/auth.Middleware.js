@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.Model.js";
 
+// Auth middleware for all authenticated users
 export const protect = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -27,4 +28,14 @@ export const protect = async (req, res, next) => {
       .status(401)
       .json({ message: "Token failed", error: error.message });
   }
+};
+
+// Auth middleware specifically for coach-only access
+export const protectCoach = (req, res, next) => {
+  if (req.user?.role !== "coach") {
+    return res
+      .status(403)
+      .json({ message: "Access denied: Coach role required" });
+  }
+  next();
 };
