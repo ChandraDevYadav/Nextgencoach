@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   FaCalendarAlt,
   FaFileAlt,
@@ -8,14 +9,20 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 import { FaCircleCheck } from "react-icons/fa6";
 import CalendarDialog from "./Common/CalendarDialog";
 
 const Navbar = () => {
   const [showCalendarDropdown, setShowCalendarDropdown] = useState(false);
   const [showReportDropdown, setShowReportDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showNotiDropdown, setShowNotiDropdown] = useState(false);
+  const [user, setUser] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const token = useAuth();
 
   const [open, setOpen] = useState(false);
 
@@ -23,6 +30,27 @@ const Navbar = () => {
     { title: "Session with Sarah Johnson", date: "2025-05-18T10:00:00" },
     { title: "Check-in with Alex Smith", date: "2025-05-21T14:00:00" },
   ];
+  
+  useEffect(()=>{
+    const userInfo = async () => {
+      try{
+        const res = await axios.get(
+          "http://localhost:5000/api/auth/user/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(res.data);
+      }catch(error){
+        console.error("Error fetching user data",error);
+      }finally{
+        setIsLoading(false);
+      }
+    };
+    userInfo();
+  },[token]);
 
   return (
     <nav className="bg-white shadow-md px-4 md:px-6 py-3 flex justify-between items-center relative">
@@ -121,12 +149,52 @@ const Navbar = () => {
           )}
         </div>
 
-        <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group">
-          <FaUser className="text-xl text-gray-700 group-hover:text-white" />
+        <div
+          className="relative"
+          onMouseEnter={() => setShowUserDropdown(true)}
+          onMouseLeave={() => setShowUserDropdown(false)}
+        >
+          <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group">
+            <FaUser className="text-xl text-gray-700 group-hover:text-white" />
+          </div>
+          {showUserDropdown && (
+            <div className="absolute right-0 mt-0 w-48 bg-white shadow-lg rounded-md z-50 border border-gray-100">
+              <div
+                className="block w-full px-4 py-2 text-left hover:rounded-t-md hover:bg-gray-50 text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300"
+              >
+                
+              </div>
+              <div
+                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300"
+              >
+                
+              </div>
+            </div>
+          )}
         </div>
-        <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group relative">
-          <FaBell className="text-xl text-gray-700 group-hover:text-white" />
-          <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+
+        <div
+          className="relative"
+          onMouseEnter={() => setShowNotiDropdown(true)}
+          onMouseLeave={() => setShowNotiDropdown(false)}
+        >
+          <div className="p-2 rounded-md hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300 cursor-pointer group">
+            <FaBell className="text-xl text-gray-700 group-hover:text-white" />
+          </div>
+          {showNotiDropdown && (
+            <div className="absolute right-0 mt-0 w-48 bg-white shadow-lg rounded-md z-50 border border-gray-100">
+              <div
+                className="block w-full px-4 py-2 text-left hover:rounded-t-md hover:bg-gray-50 text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300"
+              >
+                Your next session is with Sarah Johnson. Have you reviewed the response reports.
+              </div>
+              <div
+                className="block w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 cursor-pointer hover:bg-gradient-to-r hover:from-[#33c9a7] hover:to-[#3ba7f5] transition-colors duration-300"
+              >
+                Its time to start practicing Coaching. Get Started with Skill Builder.
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

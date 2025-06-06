@@ -1,67 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CgNotes } from "react-icons/cg";
 import { FaMagnifyingGlass, FaAngleRight } from "react-icons/fa6";
 import { Helmet } from "react-helmet";
+import axios from "axios";
 
-const reportsData = [
-  {
-    id: 1,
-    title: "Leadership Development Focus Areas",
-    client: "Sarah Johnson",
-    type: "Pre-Session Analysis",
-    date: "2025-06-24",
-    summary:
-      "Analysis of delegation challenges and team trust building opportunities.",
-  },
-  {
-    id: 2,
-    title: "Career Transition Strategy Pre-Session Analysis",
-    client: "Michael Chen",
-    type: "Initial Assessment",
-    date: "2025-06-23",
-    summary:
-      "Comprehensive evaluation of career goals and transition readiness.",
-  },
-  {
-    id: 3,
-    title: "Q2 Leadership Development Initial Assessment",
-    client: "Elena Rodriguez",
-    type: "Pre-Session Analysis",
-    date: "2025-06-22",
-    summary: "Quarterly progress review on key leadership competencies.",
-  },
-];
+const ReportsTab = ({ token }) => {
+  const [reports, setReports] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedClient, setSelectedClient] = useState("All Clients");
+  const [selectedDate, setSelectedDate] = useState("All Dates");
 
-const ReportsTab = ({
-  selectedClient,
-  setSelectedClient,
-  selectedDate,
-  setSelectedDate,
-}) => {
-  const [searchQueryReports, setSearchQueryReports] = useState("");
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/api/questionnaires/:id/report",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setReports(res.data);
+      } catch (error) {
+        console.error("Failed to fetch reports", error);
+      }
+    };
 
-  const filterReports = (report) => {
+    fetchReports();
+  }, [token]);
+
+  const uniqueClients = [
+    "All Clients",
+    ...new Set(reports.map((r) => r.client?.name).filter(Boolean)),
+  ];
+  const uniqueDates = [
+    "All Dates",
+    ...new Set(reports.map((r) => r.date?.split("T")[0])),
+  ];
+
+  const filteredReports = reports.filter((report) => {
     const matchesClient =
-      selectedClient === "All Clients" || report.client === selectedClient;
+      selectedClient === "All Clients" || report.client?.name === selectedClient;
     const matchesDate =
-      selectedDate === "All Dates" || report.date === selectedDate;
+      selectedDate === "All Dates" || report.date?.startsWith(selectedDate);
     const matchesSearch =
-      searchQueryReports === "" ||
-      report.title.toLowerCase().includes(searchQueryReports.toLowerCase()) ||
-      report.summary.toLowerCase().includes(searchQueryReports.toLowerCase()) ||
-      report.client.toLowerCase().includes(searchQueryReports.toLowerCase());
+      searchQuery === "" ||
+      report.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      report.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      report.client?.name?.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesClient && matchesDate && matchesSearch;
-  };
-
-  const filteredReports = reportsData.filter(filterReports);
+  });
 
   return (
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
       <Helmet>
-        <title>Questionnaire Analysis Reports - NextGenCoach</title>
-        <meta name="description" content="Analysed reports of the the questionnaire and its answers" />
+        <title>AI-Generated Reports - NextGenCoach</title>
+        <meta
+          name="description"
+          content="Analysed reports of the questionnaire and its answers"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
       <h2 className="text-xl font-semibold mb-2">AI-Generated Reports</h2>
@@ -71,8 +71,8 @@ const ReportsTab = ({
           <input
             type="text"
             placeholder="Search reports..."
-            value={searchQueryReports}
-            onChange={(e) => setSearchQueryReports(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-lg bg-white placeholder:font-medium shadow py-3 px-12 border-2 border-white focus:border-2 focus:border-cyan-400 outline-none transition"
           />
           <div className="absolute top-4 left-4">
@@ -85,20 +85,18 @@ const ReportsTab = ({
             value={selectedClient}
             onChange={(e) => setSelectedClient(e.target.value)}
           >
-            <option>All Clients</option>
-            <option>Sarah Johnson</option>
-            <option>Michael Chen</option>
-            <option>Elena Rodriguez</option>
+            {uniqueClients.map((client) => (
+              <option key={client}>{client}</option>
+            ))}
           </select>
           <select
             className="py-3 px-8 rounded-lg bg-white shadow border-2 border-white focus:border-2 focus:border-cyan-400 outline-none transition"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
           >
-            <option>All Dates</option>
-            <option>2025-06-24</option>
-            <option>2025-06-23</option>
-            <option>2025-06-22</option>
+            {uniqueDates.map((date) => (
+              <option key={date}>{date}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -107,22 +105,21 @@ const ReportsTab = ({
         {filteredReports.length > 0 ? (
           filteredReports.map((report) => (
             <div
-              key={report.id}
+              key={report._id}
               className="bg-white rounded-lg shadow p-4 hover:shadow-md group transition hover:bg-[#33c9a7] hover:text-white"
             >
-              <Link to="ai-generated" className="block">
-                <div className="flex justify-between items-start ">
+              <Link to={`/reports/${report._id}`} className="block">
+                <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-bold text-xl flex items-center gap-2 group-hover:text-white">
                       <CgNotes className="text-[#166534] text-lg group-hover:text-red-500" />
                       {report.title}
                     </h3>
-
                     <p className="text-sm text-gray-500 mt-1.5 font-medium group-hover:text-white">
-                      {report.client}
+                      {report.client?.name}
                     </p>
                     <p className="text-sm text-gray-500 mt-1 font-medium group-hover:text-white">
-                      {report.date}
+                      {report.date?.split("T")[0]}
                     </p>
                     <p className="text-gray-600 mt-1 group-hover:text-white">
                       {report.summary}
@@ -140,9 +137,7 @@ const ReportsTab = ({
           ))
         ) : (
           <div className="bg-white rounded-lg p-6 text-center">
-            <p className="text-gray-500">
-              No reports found matching your criteria
-            </p>
+            <p className="text-gray-500">No reports found matching your criteria</p>
           </div>
         )}
       </div>

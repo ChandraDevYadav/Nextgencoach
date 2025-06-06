@@ -27,24 +27,11 @@ const getQuestionnaireById = asyncHandler(async (req, res) => {
 });
 
 const createQuestionnaire = asyncHandler(async (req, res) => {
-  const { client, type, title, questions, isTemplate, templateName } = req.body;
-
-  if (!isTemplate) {
-    if (!client || !mongoose.Types.ObjectId.isValid(client)) {
-      res.status(400);
-      throw new Error("Invalid client ID");
-    }
-
-    const clientExists = await User.findById(client);
-    if (!clientExists) {
-      res.status(400);
-      throw new Error("Client (user) not found");
-    }
-  }
+  const { type, title, questions, isTemplate, templateName } = req.body;
 
   const questionnaire = new Questionnaire({
     user: req.user._id,
-    client: isTemplate ? "68297ae5c1eb1f6920c1f228" : client, //placeholerd client ID
+   // client: "68297ae5c1eb1f6920c1f228", //placeholerd client ID
     type,
     title,
     questions,

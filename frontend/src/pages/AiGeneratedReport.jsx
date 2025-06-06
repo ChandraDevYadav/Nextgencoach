@@ -1,47 +1,41 @@
 import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { Helmet } from "react-helmet";
 
-const AiGeneratedReport = () => {
+const AiGeneratedReport = ({ token }) => {
   const reportRef = useRef();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { id } = useParams();
 
-  const report = {
-    name: "Sarah Johnson",
-    date: "2025-06-24",
-    summary:
-      "Based on the pre-session questionnaire responses, Sarah is experiencing significant challenges with delegation and team trust. While she has made progress with executive communication, her work-life balance remains a concern with a high stress level (8/10).",
-    keyThemes: [
-      {
-        title: "Delegation Challenges",
-        detail:
-          "Difficulty letting go of control and tendency to micromanage tasks.",
-      },
-      {
-        title: "Trust Building",
-        detail:
-          "Need to develop stronger trust relationships with team members.",
-      },
-      {
-        title: "Work-Life Balance",
-        detail: "High stress levels indicating potential burnout risk.",
-      },
-    ],
-    coachingApproach: [
-      "Focus on practical delegation frameworks",
-      "Address underlying trust issues",
-      "Develop stress management strategies",
-    ],
-    suggestedQuestions: [
-      "What exactly are you afraid might happen if you fully delegate a project?",
-      "Can you share an example of when delegation worked well for you?",
-      "How might your perfectionism be limiting your team's growth?",
-      "What signals might you be sending that suggest you don't trust your team?",
-      "How could you acknowledge the tension while reaffirming your confidence in them?",
-    ],
-  };
+  useEffect(() => {
+    const fetchReport = async () => {
+      try {
+        const res = await axios.get(
+          `https://api.testir.xyz/server26/api/questionnaires/${id}/report`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setReport(res.data);
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to fetch report");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, [id, token]);
 
   const downloadPDF = async () => {
     setIsGenerating(true);
@@ -60,8 +54,40 @@ const AiGeneratedReport = () => {
     setIsGenerating(false);
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-red-500 text-lg">{error}</div>
+      </div>
+    );
+  }
+
+  if (!report) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-gray-500 text-lg">No report data available</div>
+      </div>
+    );
+  }
+
   return (
     <>
+      <Helmet>
+        <title>AI-Generated Report - NextGenCoach</title>
+        <meta
+          name="description"
+          content="Detailed AI-generated coaching report"
+        />
+      </Helmet>
+      
       <div
         className="relative min-h-screen bg-cover bg-bottom pb-8"
         style={{ backgroundImage: "url('/bg.jpg')" }}
@@ -84,13 +110,17 @@ const AiGeneratedReport = () => {
           <div className="flex justify-between items-center flex-wrap gap-x-4 mt-2">
             <div>
               <h2 className="text-2xl font-bold">
-                Leadership Development Focus Areas
+                {report.title || "Leadership Development Focus Areas"}
               </h2>
               <div className="text-gray-600 flex justify-start items-center gap-x-6 mt-2">
-                <p className="text-sm font-medium">{report.name}</p>
-                <p className="text-sm font-medium">{report.date}</p>
+                <p className="text-sm font-medium">
+                  {report.client?.name || "No client name"}
+                </p>
+                <p className="text-sm font-medium">
+                  {report.date?.split("T")[0] || new Date().toISOString().split("T")[0]}
+                </p>
                 <button className="bg-green-100 text-green-600 px-2 py-1 rounded-full text-[13px] font-medium">
-                  Pre-Session Analysis
+                  {report.type || "Pre-Session Analysis"}
                 </button>
               </div>
             </div>
@@ -139,50 +169,56 @@ const AiGeneratedReport = () => {
           <div className="space-y-4 mt-4">
             <div className="bg-white/70 p-4 shadow rounded-lg hover:bg-[#33c9a7] hover:text-white">
               <h4 className="font-semibold text-lg">Executive Summary</h4>
-              <p>{report.summary}</p>
+              <p>{report.summary || "No summary available"}</p>
             </div>
 
-            <div className="">
-              <h4 className="font-semibold text-xl py-3">Key Themes</h4>
-              <div className="grid grid-cols-3 gap-4">
-                {report.keyThemes.map((theme, index) => (
-                  <div
-                    key={index}
-                    className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group"
-                  >
-                    <p className="text-[#33C9A7] text-[17px] font-medium group-hover:text-white">
-                      {theme.title}
-                    </p>
-                    <p className="text-[16px] mt-1">{theme.detail}</p>
-                  </div>
-                ))}
+            {report.keyThemes && report.keyThemes.length > 0 && (
+              <div className="">
+                <h4 className="font-semibold text-xl py-3">Key Themes</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  {report.keyThemes.map((theme, index) => (
+                    <div
+                      key={index}
+                      className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group"
+                    >
+                      <p className="text-[#33C9A7] text-[17px] font-medium group-hover:text-white">
+                        {theme.title}
+                      </p>
+                      <p className="text-[16px] mt-1">{theme.detail}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group">
-              <h4 className="font-semibold text-xl">
-                Recommended Coaching Approach
-              </h4>
-              <ul className="space-y-1 mt-3">
-                {report.coachingApproach.map((item, index) => (
-                  <li key={index} className="text-[17px] relative pl-5">
-                    <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-[#33C9A7] group-hover:bg-white"></span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {report.coachingApproach && report.coachingApproach.length > 0 && (
+              <div className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group">
+                <h4 className="font-semibold text-xl">
+                  Recommended Coaching Approach
+                </h4>
+                <ul className="space-y-1 mt-3">
+                  {report.coachingApproach.map((item, index) => (
+                    <li key={index} className="text-[17px] relative pl-5">
+                      <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-[#33C9A7] group-hover:bg-white"></span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-            <div className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group">
-              <h4 className="font-semibold text-xl">Suggested Questions</h4>
-              <ol className="list-decimal pl-5 space-y-1 mt-3 marker:text-[#33C9A7] group-hover:marker:text-white">
-                {report.suggestedQuestions.map((q, index) => (
-                  <li key={index} className="text-[17px]">
-                    {q}
-                  </li>
-                ))}
-              </ol>
-            </div>
+            {report.suggestedQuestions && report.suggestedQuestions.length > 0 && (
+              <div className="bg-white/70 rounded-md p-4 shadow-sm hover:bg-[#33c9a7] hover:text-white group">
+                <h4 className="font-semibold text-xl">Suggested Questions</h4>
+                <ol className="list-decimal pl-5 space-y-1 mt-3 marker:text-[#33C9A7] group-hover:marker:text-white">
+                  {report.suggestedQuestions.map((q, index) => (
+                    <li key={index} className="text-[17px]">
+                      {q}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
           </div>
         </div>
       </div>
