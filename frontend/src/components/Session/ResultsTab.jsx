@@ -17,11 +17,14 @@ const ResultsTab = ({ token }) => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const res = await axios.get("https://api.testir.xyz/server26/api/questionnaires", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          "http://localhost:5000/api/questionnaires/:id/results",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const completed = res.data.filter((q) => q.status === "completed");
         setResults(completed);
       } catch (error) {
@@ -34,13 +37,22 @@ const ResultsTab = ({ token }) => {
     fetchResults();
   }, [token]);
 
-  const uniqueClients = ["All Clients", ...new Set(results.map((r) => r.client?.name).filter(Boolean))];
-  const uniqueDates = ["All Dates", ...new Set(results.map((r) => r.completedDate?.split("T")[0]))];
+  const uniqueClients = [
+    "All Clients",
+    ...new Set(results.map((r) => r.client?.name).filter(Boolean)),
+  ];
+  const uniqueDates = [
+    "All Dates",
+    ...new Set(results.map((r) => r.completedDate?.split("T")[0])),
+  ];
 
   const filteredResults = results.filter((result) => {
-    const matchesClient = selectedClient === "All Clients" || result.client?.name === selectedClient;
+    const matchesClient =
+      selectedClient === "All Clients" ||
+      result.client?.name === selectedClient;
     const matchesDate =
-      selectedDate === "All Dates" || result.completedDate?.startsWith(selectedDate);
+      selectedDate === "All Dates" ||
+      result.completedDate?.startsWith(selectedDate);
     const matchesSearch =
       searchQuery === "" ||
       result.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -50,14 +62,16 @@ const ResultsTab = ({ token }) => {
 
   const formatTimeAgo = (dateString) => {
     if (!dateString) return "Unknown time";
-    
+
     const date = new Date(dateString);
     const now = new Date();
     const diffInSeconds = Math.floor((now - date) / 1000);
-    
+
     if (diffInSeconds < 60) return "just now";
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 3600)
+      return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400)
+      return `${Math.floor(diffInSeconds / 3600)} hours ago`;
     return `${Math.floor(diffInSeconds / 86400)} days ago`;
   };
 
@@ -65,7 +79,10 @@ const ResultsTab = ({ token }) => {
     <div className="space-y-6 bg-white/70 backdrop-blur-lg rounded-xl shadow-lg p-6">
       <Helmet>
         <title>Questionnaire Results - NextGenCoach</title>
-        <meta name="description" content="Results obtained from the clients for the sent questionnaire" />
+        <meta
+          name="description"
+          content="Results obtained from the clients for the sent questionnaire"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
       <h2 className="text-xl font-semibold mb-4">Questionnaire Results</h2>
@@ -112,7 +129,9 @@ const ResultsTab = ({ token }) => {
           </div>
         ) : filteredResults.length === 0 ? (
           <div className="bg-white rounded-lg p-6 text-center">
-            <p className="text-gray-500">No results found matching your criteria</p>
+            <p className="text-gray-500">
+              No results found matching your criteria
+            </p>
           </div>
         ) : (
           filteredResults.map((entry) => (

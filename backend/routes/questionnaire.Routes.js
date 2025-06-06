@@ -30,7 +30,7 @@ router
 
 router.route("/:id/send").post(protect, sendQuestionnaire);
 
-router.route("/results").get(protect, getCompletedQuestionnaires);
+router.route("/:id/results").get(protect, getCompletedQuestionnaires);
 
 router.route("/:id/report").post(protect, generatePrepReport);
 

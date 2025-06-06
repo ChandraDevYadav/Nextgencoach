@@ -10,7 +10,7 @@ const questionnaireSchema = new mongoose.Schema(
     client: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // updated from 'Client' to 'User'
-      required: true,
+      required: false,
     },
     type: {
       type: String,

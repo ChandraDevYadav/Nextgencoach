@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import { useAuth } from "../../context/AuthContext";
@@ -6,13 +6,13 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 
-export default function SendDialog({ questionnaireId }) {
+function SendDialog({ questionnaireId }) {
   const { token } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedClients, setSelectedClients] = useState([]);
-
   const isSending = useRef(false);
+  const dialogRef = useRef();
 
   const clients = [
     {
@@ -20,18 +20,21 @@ export default function SendDialog({ questionnaireId }) {
       name: "Sarah Johnson",
       position: "VP of Marketing",
       company: "Innovate Tech Solutions",
+      email: "sarah.johnson@example.com",
     },
     {
       id: 2,
       name: "Michael Chen",
       position: "Senior Product Manager",
       company: "Future Systems Inc",
+      email: "michael.chen@example.com",
     },
     {
       id: 3,
       name: "Elena Rodriguez",
       position: "Director of Operations",
       company: "Global Dynamics",
+      email: "elena.rodriguez@example.com",
     },
   ];
 
@@ -61,24 +64,47 @@ export default function SendDialog({ questionnaireId }) {
     }
 
     try {
-      await axios.post(`/api/questionnaires/${questionnaireId}/send`,{}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      await axios.post(
+        `https://api.testir.xyz/server26/api/questionnaires/${questionnaireId}/send`,
+        { clients: selectedClients },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       toast.success("Questionnaire sent successfully!");
       setIsOpen(false);
       setSelectedClients([]);
       setSearch("");
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Failed to send questionnaire."
-      );
+      toast.error(err.response?.data?.message || "Failed to send questionnaire.");
     } finally {
       isSending.current = false;
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dialogRef.current && !dialogRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   return (
     <>
@@ -90,6 +116,8 @@ export default function SendDialog({ questionnaireId }) {
       <button
         onClick={() => setIsOpen(true)}
         className="bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] font-medium text-white hover:text-red-600 rounded-full flex items-center gap-2"
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
       >
         Send
         <svg
@@ -110,15 +138,24 @@ export default function SendDialog({ questionnaireId }) {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/90 w-full rounded-lg flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-lg space-y-4">
+        <div
+          className="fixed inset-0 bg-black/90 w-full rounded-lg flex justify-center items-center z-50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="send-dialog-title"
+        >
+          <div
+            ref={dialogRef}
+            className="bg-white p-6 rounded-xl shadow-md w-full max-w-lg space-y-4"
+          >
             <div className="flex justify-between items-start">
-              <h2 className="text-lg font-semibold text-black">
+              <h2 id="send-dialog-title" className="text-lg font-semibold text-black">
                 Select Clients
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-gray-700"
+                aria-label="Close dialog"
               >
                 <RxCross2 />
               </button>
@@ -131,11 +168,12 @@ export default function SendDialog({ questionnaireId }) {
                 className="w-full border text-black placeholder:text-black placeholder:text-[17px] border-gray-300 rounded-md px-8 py-2"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                aria-label="Search clients"
               />
               <IoIosSearch className="absolute top-[10px] text-2xl left-2 text-black" />
             </div>
 
-            <div className="max-h-60 overflow-y-auto divide-y scrollbar-hide">
+            <div className="max-h-60 overflow-y-auto divide-y scrollbar-hide" tabIndex={0}>
               {filteredClients.length > 0 ? (
                 filteredClients.map((client) => (
                   <div
@@ -146,12 +184,13 @@ export default function SendDialog({ questionnaireId }) {
                         ? "bg-blue-100 border border-blue-500"
                         : ""
                     }`}
+                    role="checkbox"
+                    aria-checked={selectedClients.some((c) => c.id === client.id)}
+                    tabIndex={-1}
                   >
                     <div>
                       <p className="font-medium text-gray-700">{client.name}</p>
-                      <p className="text-sm text-gray-600">
-                        {client.position}
-                      </p>
+                      <p className="text-sm text-gray-600">{client.position}</p>
                       <p className="text-sm text-gray-500">{client.company}</p>
                     </div>
                     {selectedClients.some((c) => c.id === client.id) && (
@@ -160,9 +199,7 @@ export default function SendDialog({ questionnaireId }) {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 py-4 text-center">
-                  No clients found.
-                </p>
+                <p className="text-sm text-gray-500 py-4 text-center">No clients found.</p>
               )}
             </div>
 
@@ -181,3 +218,5 @@ export default function SendDialog({ questionnaireId }) {
     </>
   );
 }
+
+export default SendDialog;
