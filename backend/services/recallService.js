@@ -2,7 +2,7 @@ import axios from "axios";
 import FormData from "form-data";
 
 const RECALL_API_KEY = process.env.RECALL_API_KEY;
-const RECALL_API_URL = "https://api.recall.ai/api/v1";
+const RECALL_API_URL = "https://us-east-2.api.recall.ai/api/v1";
 
 const recallApi = axios.create({
   baseURL: RECALL_API_URL,
