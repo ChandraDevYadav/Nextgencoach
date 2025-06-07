@@ -49,7 +49,7 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/questionnaires",
+        "https://api.testir.xyz/server26/api/questionnaires/",
         {
           method: "POST",
           headers: {
@@ -156,7 +156,7 @@ const AddQuestionnaireDialog = ({ isOpen, onClose, onSubmit }) => {
       onClick={addQuestion}
       type="button"
       aria-label="Add question"
-      className="absolute top-1/2 right-2 -translate-y-1/2 bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] hover:from-[#28b89a] hover:to-[#3399f0] text-white rounded-full p-2 flex items-center justify-center transition"
+      className="absolute top-1/2 right-2 text-black -translate-y-1/2 hover:bg-blue-600/60 rounded-full p-2 flex items-center justify-center transition"
     >
       <IoAdd size={20} />
     </button>

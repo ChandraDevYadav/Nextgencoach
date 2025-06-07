@@ -18,7 +18,7 @@ const ResultsTab = ({ token }) => {
     const fetchResults = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/questionnaires/:id/results",
+          "http://localhost:5000/api/questionnaires/results",
           {
             headers: {
               Authorization: `Bearer ${token}`,
