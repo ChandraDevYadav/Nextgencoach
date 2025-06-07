@@ -152,7 +152,7 @@ const PracticeBot = () => {
 
   return (
     <div
-      className="w-full shadow-2xl h-[600px] flex flex-col bg-cover bg-bottom relative overflow-hidden"
+      className="w-full shadow-2xl min-h-[91vh] flex flex-col bg-cover bg-bottom relative overflow-hidden"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
       <div className="absolute inset-0 bg-white/30 backdrop-blur-lg z-0 rounded-lg" />
@@ -167,7 +167,7 @@ const PracticeBot = () => {
       <ToastContainer />
 
       {/* Header */}
-      <div className="flex justify-between items-center gap-3 p-4 bg-white/60 text-gray-800 z-10">
+      <div className="flex justify-between items-center gap-3 p-4 bg-white/80 shadow text-gray-800 z-10">
         <div className="flex justify-center gap-4 items-center">
           <div className="w-8 h-8 rounded-full text-[#33C9A7] bg-[#1bfac685] flex items-center justify-center font-bold text-xl">
             <svg
@@ -199,7 +199,7 @@ const PracticeBot = () => {
         </div>
         <button
           onClick={handleEndSession}
-          className="px-4 py-2 text-[16px] font-medium bg-red-600 hover:bg-red-800 rounded-full text-white shadow flex items-center gap-2 transition-colors"
+          className="px-4 py-2 text-[16px] font-medium bg-red-600 hover:bg-red-800 rounded text-white shadow flex items-center gap-2 transition-colors"
         >
           End Session
         </button>
@@ -216,18 +216,18 @@ const PracticeBot = () => {
             </div>
           ) : (
             <>
-              {/* <div className="text-center text-[16px] font-medium text-gray-700 bg-white/30 px-4 py-2 rounded-xl shadow-md self-center">
+              <div className="text-center text-[16px] font-medium text-gray-700 bg-white/20 px-4 py-2 rounded-xl self-center">
                 Practice session started with Andrea Chen. You can begin <br />
                 coaching now.
-              </div> */}
+              </div>
 
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`max-w-[80%] px-4 py-2 text-sm rounded-xl ${
+                  className={`max-w-[80%] px-4 py-2 text-sm rounded ${
                     msg.sender === "user"
                       ? "bg-blue-500 text-white self-end ml-auto"
-                      : "bg-gray-100 text-gray-900 self-start mr-auto"
+                      : "bg-gray-200 text-gray-900 self-start mr-auto"
                   }`}
                 >
                   {msg.text}
@@ -259,38 +259,49 @@ const PracticeBot = () => {
         <div className="w-full max-w-3xl mx-auto flex flex-col items-center gap-4">
           <div className="w-full flex justify-center gap-2 items-center relative">
             <textarea
-              rows={2}
+              rows={3}
               value={typedMessage}
               onChange={(e) => setTypedMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder="Ask anything"
               className="flex-1 pl-4 pr-20 py-3 border bg-white/50 border-gray-300 rounded-xl shadow text-sm focus:outline-none focus:ring-2 focus:ring-[#33C9A7] resize-none hide-scrollbar"
               disabled={isLoading}
             />
 
-            <div className="flex justify-center items-center gap-2 absolute right-2 bottom-2">
-              <button
-                onClick={startListening}
-                disabled={isLoading}
-                className={`p-2 rounded-full flex items-center text-lg justify-center transition ${
-                  recording
-                    ? "text-red-500 animate-pulse"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                {recording ? <HiMicrophone /> : <HiOutlineMicrophone />}
-              </button>
-              <button
-                onClick={handleTypedMessageSend}
-                disabled={!typedMessage.trim() || isLoading}
-                className={`p-2 rounded-full shadow text-lg ${
-                  typedMessage.trim() && !isLoading
-                    ? "bg-[#33C9A7] text-white hover:bg-[#2bb297]"
-                    : "bg-gray-700 text-white cursor-not-allowed"
-                }`}
-              >
-                <FaArrowUp />
-              </button>
+            <div className="flex justify-center items-center absolute right-2 bottom-2">
+              <div className="relative inline-block group">
+                <button
+                  onClick={startListening}
+                  disabled={isLoading}
+                  className={`p-2 rounded-full flex items-center text-xl justify-center transition ${
+                    recording ? "text-red-500 animate-pulse" : "text-gray-800"
+                  }`}
+                >
+                  {recording ? <HiMicrophone /> : <HiOutlineMicrophone />}
+                </button>
+
+                <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1 text-[12px] font-medium bg-gray-800 text-white px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                  Record
+                </span>
+              </div>
+
+              <div className="relative inline-block group">
+                <button
+                  onClick={handleTypedMessageSend}
+                  disabled={!typedMessage.trim() || isLoading}
+                  className={`p-[6px] rounded-full shadow text-[16px] transition ${
+                    typedMessage.trim() && !isLoading
+                      ? "bg-[#33C9A7] text-white hover:bg-[#2bb297]"
+                      : "bg-gray-700 text-white cursor-not-allowed"
+                  }`}
+                >
+                  <FaArrowUp />
+                </button>
+
+                <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1 text-[12px] font-medium bg-gray-800 text-white px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                  Start
+                </span>
+              </div>
             </div>
           </div>
 
