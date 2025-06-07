@@ -73,10 +73,9 @@ app.use("/api/analysis", preQuestionRoutes);
 app.use("/api/preprompt", prePromptRoutes);
 app.use("/api/practiceBot", practiceBotRoutes);
 
-// Error handler
 app.use(errorHandler);
 
-// Setup Socket.IO and delegate to handler
+// Setup Socket.IO
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,

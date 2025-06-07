@@ -7,6 +7,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { Helmet } from "react-helmet";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const PracticeBot = () => {
   const [botId, setBotId] = useState(null);
@@ -17,7 +19,6 @@ const PracticeBot = () => {
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom of messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -31,18 +32,21 @@ const PracticeBot = () => {
     const createBotSession = async () => {
       setIsLoading(true);
       try {
-        const { data } = await axios.post("/api/practicebot", {
-          name: "Andrea Chen",
-          role: "Marketing Director",
-          mood: "Stressed",
-          need: "Leadership coaching",
-          messages: [
-            {
-              sender: "bot",
-              text: "Hi, I'm Andrea Chen. I'm feeling really stressed about an upcoming product launch and could use some leadership coaching.",
-            },
-          ],
-        });
+        const { data } = await axios.post(
+          "http://localhost:5000/api/practicebot",
+          {
+            name: "Andrea Chen",
+            role: "Marketing Director",
+            mood: "Stressed",
+            need: "Leadership coaching",
+            messages: [
+              {
+                sender: "bot",
+                text: "Hi, I'm Andrea Chen. I'm feeling really stressed about an upcoming product launch and could use some leadership coaching.",
+              },
+            ],
+          }
+        );
         setBotId(data._id);
         setMessages(data.messages || []);
       } catch (error) {
@@ -102,10 +106,13 @@ const PracticeBot = () => {
     setIsLoading(true);
 
     try {
-      const { data } = await axios.post(`/api/practicebot/${botId}/message`, {
-        sender: "user",
-        text,
-      });
+      const { data } = await axios.post(
+        `http://localhost:5000/api/practicebot/${botId}/message`,
+        {
+          sender: "user",
+          text,
+        }
+      );
 
       const botReply = { sender: "bot", text: data.reply };
       setMessages((prev) => [...prev, botReply]);
@@ -140,15 +147,51 @@ const PracticeBot = () => {
     });
   };
 
+  const navigate = useNavigate();
+
   const handleNewAvatar = () => {
     toast.info("Creating new avatar...", {
       position: "top-right",
       autoClose: 1500,
       onClose: () => {
-        window.location.reload();
+        navigate("/skill");
       },
     });
   };
+  const { state } = useLocation();
+  const avatar = state?.avatar;
+
+  const { token, logout } = useAuth();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/api/auth/user/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(res.data);
+      } catch (error) {
+        console.error(
+          "Profile fetch failed:",
+          error.response?.data?.message || error.message
+        );
+
+        if (error.response?.status === 401) {
+          logout();
+        }
+      }
+    };
+
+    if (token) {
+      fetchProfile();
+    }
+  }, [token, logout]);
 
   return (
     <div
@@ -166,7 +209,6 @@ const PracticeBot = () => {
       </Helmet>
       <ToastContainer />
 
-      {/* Header */}
       <div className="flex justify-between items-center gap-3 p-4 bg-white/80 shadow text-gray-800 z-10">
         <div className="flex justify-center gap-4 items-center">
           <div className="w-8 h-8 rounded-full text-[#33C9A7] bg-[#1bfac685] flex items-center justify-center font-bold text-xl">
@@ -191,11 +233,29 @@ const PracticeBot = () => {
             </svg>
           </div>
           <div>
-            <div className="font-semibold text-lg">Andrea Chen</div>
-            <div className="text-[13px] opacity-90">
-              Marketing Director • Stressed • Needs leadership coaching
+            {user ? (
+              <>
+                <h3 className="text-lg font-semibold">{user.name}</h3>
+              </>
+            ) : (
+              <span className="text-sm">No User</span>
+            )}
+            <div className="text-[14px] font-medium opacity-90">
+              {avatar?.age} • {avatar?.gender} • {avatar?.profession}
             </div>
           </div>
+        </div>
+        <div className="text-center text-[15px] font-medium text-gray-700 bg-white/20 px-4 py-2 rounded-xl self-center">
+          {user ? (
+            <>
+              <h3 className="">
+                Practice session started with {user.name} <br /> You can begin
+                coaching now.
+              </h3>
+            </>
+          ) : (
+            <span className="text-sm">No User</span>
+          )}
         </div>
         <button
           onClick={handleEndSession}
@@ -205,7 +265,6 @@ const PracticeBot = () => {
         </button>
       </div>
 
-      {/* Messages Area */}
       <div className="relative flex-1 h-full overflow-y-auto px-4 py-3 bg-cover bg-center">
         <div className="absolute top-0 left-0 right-0 bottom-0 bg-white/60 z-0"></div>
 
@@ -216,11 +275,6 @@ const PracticeBot = () => {
             </div>
           ) : (
             <>
-              <div className="text-center text-[16px] font-medium text-gray-700 bg-white/20 px-4 py-2 rounded-xl self-center">
-                Practice session started with Andrea Chen. You can begin <br />
-                coaching now.
-              </div>
-
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -254,7 +308,6 @@ const PracticeBot = () => {
         </div>
       </div>
 
-      {/* Input Area */}
       <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/30 backdrop-blur-sm z-10">
         <div className="w-full max-w-3xl mx-auto flex flex-col items-center gap-4">
           <div className="w-full flex justify-center gap-2 items-center relative">
@@ -307,9 +360,9 @@ const PracticeBot = () => {
 
           <button
             onClick={handleNewAvatar}
-            className="text-sm font-semibold flex justify-start items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+            className="text-sm font-semibold group flex justify-start items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
           >
-            <TbReload className="text-[#2bb297] text-sm" />
+            <TbReload className="text-[#2bb297] group-hover:text-red-600 text-sm" />
             Configure New Avatar
           </button>
         </div>

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 const SkillBuilder = () => {
   const navigate = useNavigate();
 
   const [avatar, setAvatar] = useState({
-    age: "36",
-    gender: "Female",
+    age: "18-25",
+    gender: "Male",
     profession: "Mid-level Manager",
     communicationStyle: "Reserved and Thoughtful",
     openness: "Neutral",
@@ -24,8 +26,40 @@ const SkillBuilder = () => {
   };
 
   const handleStartVoiceSession = () => {
-    navigate("/practice-bot");
+    navigate("/practice-bot", { state: { avatar } });
   };
+
+  const { token, logout } = useAuth();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/api/auth/user/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(res.data);
+      } catch (error) {
+        console.error(
+          "Profile fetch failed:",
+          error.response?.data?.message || error.message
+        );
+
+        if (error.response?.status === 401) {
+          logout();
+        }
+      }
+    };
+
+    if (token) {
+      fetchProfile();
+    }
+  }, [token, logout]);
 
   return (
     <div
@@ -40,6 +74,7 @@ const SkillBuilder = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Helmet>
+
       <div className="absolute inset-0 bg-white/20 backdrop-blur-lg z-0" />
 
       <div className="relative z-10 max-w-4xl mx-auto pb-12">
@@ -59,10 +94,10 @@ const SkillBuilder = () => {
             through voice conversation.
           </p>
 
-          <div className="flex jusstify-start items-center gap-8 pt-4">
+          <div className="flex justify-start items-start gap-8 pt-4">
             <div className="w-full">
               <h2 className="text-xl font-bold">Demographics</h2>
-              <div className="rounded-lg space-y-4 mt-2">
+              <div className="space-y-4 mt-2">
                 <div>
                   <label className="block font-medium pb-2">Age</label>
                   <select
@@ -108,7 +143,7 @@ const SkillBuilder = () => {
 
             <div className="w-full">
               <h2 className="text-xl font-bold">Personality</h2>
-              <div className="rounded-lg space-y-4 mt-2">
+              <div className="space-y-4 mt-2">
                 <div>
                   <label className="block font-medium pb-2">
                     Communication Style
@@ -147,7 +182,7 @@ const SkillBuilder = () => {
                     name="emotionalState"
                     value={avatar.emotionalState}
                     onChange={handleChange}
-                    className="w-full bg-white shadow p-3 rounded-md"
+                    className="w-full p-3 bg-white shadow rounded-md"
                   >
                     <option>Calm and Focused</option>
                     <option>Stressed and Anxious</option>
@@ -159,7 +194,7 @@ const SkillBuilder = () => {
 
             <div className="w-full">
               <h2 className="text-xl font-bold">Coaching Focus</h2>
-              <div className="rounded-lg space-y-4 mt-2">
+              <div className="space-y-4 mt-2">
                 <div>
                   <label className="block font-medium pb-2">
                     Primary Challenge
@@ -207,9 +242,9 @@ const SkillBuilder = () => {
             </div>
           </div>
 
-          <div className="bg-gray-100 p-6 rounded-lg group hover:bg-[#33c9a7] hover:text-white">
+          <div className="bg-gray-100 p-6 rounded-lg group hover:bg-[#33c9a7] hover:text-white mt-6">
             <h2 className="text-xl font-medium">Avatar Preview</h2>
-            <div className=" mt-2 flex justify-start items-center gap-6">
+            <div className="mt-2 flex items-center gap-6">
               <div className="text-[#33C9A7] bg-[#35d4af4f] group-hover:text-amber-400 group-hover:bg-white p-3 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -232,7 +267,13 @@ const SkillBuilder = () => {
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-semibold">Andrea Chen</h3>
+                {user ? (
+                  <>
+                    <h3 className="text-xl font-semibold">{user.name}</h3>
+                  </>
+                ) : (
+                  <span className="text-sm">No User</span>
+                )}
                 <p className="text-gray-500 text-[16px] py-1 group-hover:text-white">
                   {avatar.age}, {avatar.gender}, {avatar.profession}
                 </p>
@@ -252,7 +293,7 @@ const SkillBuilder = () => {
 
           <div className="flex justify-between mt-6">
             <button
-              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-white"
+              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
               onClick={() => window.history.back()}
             >
               Cancel
@@ -262,28 +303,8 @@ const SkillBuilder = () => {
               className="relative overflow-hidden bg-gradient-to-r from-[#33c9a7] to-[#3ba7f5] text-white px-4 py-2 rounded-md group"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-400 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0"></span>
-
               <span className="relative z-10 flex justify-start items-center">
-                Start Voice Session{" "}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="lucide lucide-bot w-4 h-4 ml-2"
-                >
-                  <path d="M12 8V4H8"></path>
-                  <rect width="16" height="12" x="4" y="8" rx="2"></rect>
-                  <path d="M2 14h2"></path>
-                  <path d="M20 14h2"></path>
-                  <path d="M15 13v2"></path>
-                  <path d="M9 13v2"></path>
-                </svg>
+                Start Voice Session
               </span>
             </button>
           </div>
