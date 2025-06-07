@@ -1,81 +1,152 @@
-import { Configuration, OpenAIApi } from "openai";
 import PracticeBot from "../models/practiceBot.Model.js";
-import dotenv from "dotenv";
-dotenv.config();
+import axios from "axios";
 
-const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(config);
+// Constants
+const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
+const API_TIMEOUT = 10000; // 10 seconds
+const INSUFFICIENT_BALANCE_ERROR =
+  "I'm currently unavailable due to a service issue. Please try again later or contact support.";
 
-// Generate GPT reply
+// Helper: Check for DeepSeek billing errors
+const isBillingError = (error) => {
+  return (
+    error.response?.status === 402 ||
+    error.response?.data?.error?.message?.includes("Insufficient Balance")
+  );
+};
+
+// Generate bot reply with billing error handling
 const generateBotReply = async (practiceBot, userMessage) => {
-  const prompt = `
-You are roleplaying as ${practiceBot.name}, a ${practiceBot.role}.
-You are currently feeling ${practiceBot.mood} and need ${practiceBot.need}.
+  if (!userMessage?.trim()) {
+    return "I didn't receive your message. Could you please repeat that?";
+  }
 
-Respond in character and realistically to the following user message:
+  const prompt = `You are ${practiceBot.name}, a ${practiceBot.role}.
+You feel ${practiceBot.mood} and need ${practiceBot.need}.
 
+Respond in character to:
 User: "${userMessage}"
 `;
 
-  const response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [
+  try {
+    const response = await axios.post(
+      DEEPSEEK_API_URL,
       {
-        role: "system",
-        content: "Stay in character and respond empathetically.",
+        model: "deepseek-chat",
+        messages: [
+          {
+            role: "system",
+            content: `Maintain ${practiceBot.name}'s persona (${practiceBot.role}) who feels ${practiceBot.mood}.`,
+          },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.7,
+        max_tokens: 150,
       },
-      { role: "user", content: prompt },
-    ],
-    temperature: 0.7,
-  });
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+        },
+        timeout: API_TIMEOUT,
+      }
+    );
 
-  return response.data.choices[0].message.content.trim();
+    return (
+      response.data.choices[0]?.message?.content?.trim() ||
+      INSUFFICIENT_BALANCE_ERROR
+    );
+  } catch (error) {
+    console.error("DeepSeek API Error:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+    });
+
+    return isBillingError(error)
+      ? INSUFFICIENT_BALANCE_ERROR
+      : `As ${practiceBot.name}, I'm having technical difficulties. Please try again.`;
+  }
 };
 
-// Create new PracticeBot session
+// Validate request data
+const validateRequest = (data, isBotCreation = false) => {
+  if (isBotCreation) {
+    const required = ["name", "role", "mood", "need"];
+    const missing = required.filter((field) => !data[field]);
+    if (missing.length)
+      throw new Error(`Missing fields: ${missing.join(", ")}`);
+  }
+
+  if (data.text && !data.text.trim()) {
+    throw new Error("Message text cannot be empty");
+  }
+};
+
+// Controllers
 export const createPracticeBot = async (req, res) => {
   try {
-    const newBot = new PracticeBot(req.body);
+    validateRequest(req.body, true);
+
+    const newBot = new PracticeBot({
+      ...req.body,
+      messages: [
+        {
+          sender: "bot",
+          text: `Hi! I'm ${req.body.name}, a ${req.body.role}. I'm feeling ${req.body.mood} about ${req.body.need}.`,
+        },
+      ],
+    });
+
     await newBot.save();
     res.status(201).json(newBot);
   } catch (err) {
-    res.status(500).json({ message: "Failed to create practice bot session." });
+    console.error("Create Bot Error:", err);
+    res.status(400).json({
+      success: false,
+      message: err.message || "Failed to create session",
+      error: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    });
   }
 };
 
-// Add user message and generate bot reply
 export const addMessage = async (req, res) => {
-  const { sender, text } = req.body;
-
   try {
+    validateRequest(req.body);
     const bot = await PracticeBot.findById(req.params.id);
-    if (!bot)
-      return res.status(404).json({ message: "PracticeBot session not found" });
+    if (!bot) return res.status(404).json({ message: "Session not found" });
 
-    bot.messages.push({ sender, text });
+    // Add user message
+    bot.messages.push({
+      sender: req.body.sender || "user",
+      text: req.body.text,
+    });
 
-    const reply = await generateBotReply(bot, text);
-    bot.messages.push({ sender: "bot", text: reply });
+    // Get bot response
+    const botReply = await generateBotReply(bot, req.body.text);
+    bot.messages.push({ sender: "bot", text: botReply });
 
     await bot.save();
-    res.json({ reply });
+    res.json({ reply: botReply });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to handle message." });
+    console.error("Add Message Error:", err);
+    res.status(err.message.includes("cannot be empty") ? 400 : 500).json({
+      success: false,
+      message: err.message || "Failed to process message",
+    });
   }
 };
 
-// Get full conversation
 export const getConversation = async (req, res) => {
   try {
     const bot = await PracticeBot.findById(req.params.id);
-    if (!bot)
-      return res.status(404).json({ message: "PracticeBot session not found" });
-
+    if (!bot) return res.status(404).json({ message: "Session not found" });
     res.json(bot);
   } catch (err) {
-    res.status(500).json({ message: "Failed to get conversation." });
+    console.error("Get Conversation Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve conversation",
+    });
   }
 };

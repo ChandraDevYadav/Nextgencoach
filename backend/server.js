@@ -21,7 +21,7 @@ import reportRoutes from "./routes/report.Routes.js";
 import summaryRoutes from "./routes/summary.Routes.js";
 import preQuestionRoutes from "./routes/preQuestion.Routes.js";
 import prePromptRoutes from "./routes/prePrompt.Routes.js";
-// import practiceBotRoutes from "./routes/practiceBot.Routes.js";
+import practiceBotRoutes from "./routes/practiceBot.Routes.js";
 
 dotenv.config();
 
@@ -71,7 +71,7 @@ app.use("/api/report", reportRoutes);
 app.use("/api/summary", summaryRoutes);
 app.use("/api/analysis", preQuestionRoutes);
 app.use("/api/preprompt", prePromptRoutes);
-// app.use("/api/practiceBot", practiceBotRoutes);
+app.use("/api/practiceBot", practiceBotRoutes);
 
 // Error handler
 app.use(errorHandler);
