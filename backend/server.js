@@ -13,13 +13,15 @@ import questionnaireRoutes from "./routes/questionnaire.Routes.js";
 import sessionRoutes from "./routes/sessionPrep.Routes.js";
 import skillBuilderRoutes from "./routes/skillBuilder.Routes.js";
 import authRoutes from "./routes/auth.Routes.js";
-import liveCoachingRoutes from "./routes/liveCoaching.Routes.js";
 import zoomRoutes from "./routes/zoom.Routes.js";
-import recallBotRoutes from "./routes/recallBot.Routes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 import socketHandler from "./socket/socketHandler.js";
 import botRoutes from "./routes/bot.Routes.js";
-import transcriptRoutes from "./routes/transcript.Routes.js";
+import reportRoutes from "./routes/report.Routes.js";
+import summaryRoutes from "./routes/summary.Routes.js";
+import preQuestionRoutes from "./routes/preQuestion.Routes.js";
+import prePromptRoutes from "./routes/prePrompt.Routes.js";
+// import practiceBotRoutes from "./routes/practiceBot.Routes.js";
 
 dotenv.config();
 
@@ -63,10 +65,13 @@ app.use("/api/auth", authRoutes);
 app.use("/api/questionnaires", questionnaireRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/skill-builder", skillBuilderRoutes);
-app.use("/api/live-coaching", liveCoachingRoutes);
 app.use("/api/zoom", zoomRoutes);
-app.use("/api/recall", recallBotRoutes);
 app.use("/api", botRoutes);
+app.use("/api/report", reportRoutes);
+app.use("/api/summary", summaryRoutes);
+app.use("/api/analysis", preQuestionRoutes);
+app.use("/api/preprompt", prePromptRoutes);
+// app.use("/api/practiceBot", practiceBotRoutes);
 
 // Error handler
 app.use(errorHandler);
